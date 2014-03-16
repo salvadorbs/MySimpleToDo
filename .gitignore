@@ -7,4 +7,11 @@ __history
 *.map
 *.exe
 *.dll
-bin/*
+#bin/*
+
+#Custom - Lazarus
+*.dbg
+bin/todo.txt
+*.lps
+lib/*
+backup/*
