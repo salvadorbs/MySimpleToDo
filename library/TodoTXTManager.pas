@@ -17,7 +17,7 @@ type
     FTree: TBaseVirtualTree;
 
     procedure ExcludeLastSeparator(var FullString: string);
-    procedure InternalSave(const ANode: PVirtualNode; var AMyFile: TextFile);
+    function NodeToString(const ANode: PVirtualNode): string;
     function SaveCheckedState(ANodeData: PBaseNodeData): string;
     function SavePriority(ANodeData: PBaseNodeData): string;
     function SaveCreateData(ANodeData: PBaseNodeData): string;
@@ -72,10 +72,9 @@ begin
     ANodeData.Checked := Result;
 end;
 
-procedure TToDoTXTManager.InternalSave(const ANode: PVirtualNode; var AMyFile: TextFile);
+function TToDoTXTManager.NodeToString(const ANode: PVirtualNode): string;
 var
   NodeData: PBaseNodeData;
-  FullString: string;
 
   function PrepareString(AFunc: TNodeDataFunc): string;
   begin
@@ -85,11 +84,12 @@ var
   end;
 
 begin
+  Result   := '';
   NodeData := FTree.GetNodeData(ANode);
   if Assigned(NodeData) then
   begin
     //Get full string of ToDo
-    FullString := PrepareString(SaveCheckedState) +
+    Result := PrepareString(SaveCheckedState) +
                   PrepareString(SavePriority) +
                   PrepareString(SaveCreateData) +
                   PrepareString(SaveText) +
@@ -97,9 +97,7 @@ begin
                   PrepareString(SaveContexts) +
                   PrepareString(SaveDeadLine) +
                   SaveThresold(NodeData);
-    ExcludeLastSeparator(FullString);
-    //Write in file
-    Write(AMyFile, FullString);
+    ExcludeLastSeparator(Result);
   end;
 end;
 
@@ -379,9 +377,8 @@ begin
     Node := FTree.GetFirst;
     while Assigned(Node) do
     begin
-      //Save NodeData in MyFile
-      InternalSave(Node, MyFile);
-      WriteLn(MyFile);
+      //Get node string and write in file
+      WriteLn(MyFile, NodeToString(Node));
       //Get next node
       Node := FTree.GetNext(Node);
     end;
