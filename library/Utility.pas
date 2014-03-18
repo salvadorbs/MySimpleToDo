@@ -1,11 +1,11 @@
-unit utility;
+unit Utility;
 
 {$mode delphi}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, Forms, Windows, VirtualTrees;
+  Classes, SysUtils, Forms, {$IFDEF WINDOWS}Windows, {$ELSE UNIX} LCLIntf, LCLType, LMessages,{$ENDIF} VirtualTrees;
 
 //Date
 function StrToDateEx(const str: string): TDate;
@@ -72,13 +72,19 @@ begin
   end;
 end;
 
+
 function IsWindowsVista: Boolean;
+{$IFDEF WINDOWS}
 var
   VerInfo: TOSVersioninfo;
 begin
   VerInfo.dwOSVersionInfoSize := SizeOf(TOSVersionInfo);
   GetVersionEx(VerInfo);
   Result := VerInfo.dwMajorVersion >= 6;
+{$ELSE}
+begin
+  Result := False;
+{$ENDIF}
 end;
 
 end.

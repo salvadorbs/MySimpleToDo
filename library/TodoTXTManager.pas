@@ -1,4 +1,4 @@
-unit ToDoTXTManager;
+unit TodoTXTManager;
 
 {$mode delphi}{$H+}
 

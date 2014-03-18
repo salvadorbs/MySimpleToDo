@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus,
-  StdCtrls, EditBtn, ExtCtrls, Buttons, VirtualTrees, ToDoTXTManager;
+  StdCtrls, EditBtn, ExtCtrls, Buttons, VirtualTrees, TodoTXTManager;
 
 type
 

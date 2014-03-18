@@ -68,17 +68,18 @@
       <Unit5>
         <Filename Value="library\Utility.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="utility"/>
+        <UnitName Value="Utility"/>
       </Unit5>
       <Unit6>
         <Filename Value="library\TodoTXTManager.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="ToDoTXTManager"/>
+        <UnitName Value="TodoTXTManager"/>
       </Unit6>
       <Unit7>
-        <Filename Value="forms\propertynode.pas"/>
+        <Filename Value="forms\PropertyNode.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmProperty"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="propertynode"/>
       </Unit7>

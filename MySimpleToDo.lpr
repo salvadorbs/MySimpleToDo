@@ -7,8 +7,8 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, main, BaseNodeData, utility, ToDoTXTManager, SubUtils,
-  UniParser, virtualtreeview_package, PropertyNode;
+  Forms, Main, PropertyNode, BaseNodeData, Utility, TodoTXTManager, SubUtils,
+  UniParser, virtualtreeview_package;
 
 {$R *.res}
 
