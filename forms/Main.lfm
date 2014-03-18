@@ -27,6 +27,7 @@ object frmMain: TfrmMain
     TreeOptions.MiscOptions = [toCheckSupport, toFullRepaintOnResize, toInitOnSave, toToggleOnDblClick, toWheelPanning, toFullRowDrag, toEditOnClick]
     TreeOptions.PaintOptions = [toShowButtons, toShowDropmark, toThemeAware, toUseBlendedImages]
     TreeOptions.SelectionOptions = [toFullRowSelect]
+    OnChecked = vstListChecked
     OnDblClick = vstListDblClick
     OnFreeNode = vstListFreeNode
     OnGetText = vstListGetText

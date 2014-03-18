@@ -26,6 +26,7 @@ type
     procedure mniRemoveClick(Sender: TObject);
     procedure mniAddItemClick(Sender: TObject);
     procedure mniPropertiesClick(Sender: TObject);
+    procedure vstListChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstListDblClick(Sender: TObject);
     procedure vstListFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstListGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
@@ -90,6 +91,15 @@ end;
 procedure TfrmMain.mniPropertiesClick(Sender: TObject);
 begin
   ShowProperty(vstList, vstList.FocusedNode);
+end;
+
+procedure TfrmMain.vstListChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
+var
+  NodeData: PBaseNodeData;
+begin
+  NodeData := Sender.GetNodeData(Node);
+  if Assigned(NodeData) then
+    NodeData.Checked := Sender.CheckState[Node] = csCheckedNormal;
 end;
 
 procedure TfrmMain.vstListDblClick(Sender: TObject);
