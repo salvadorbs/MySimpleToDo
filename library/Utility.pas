@@ -5,13 +5,17 @@ unit Utility;
 interface
 
 uses
-  Classes, SysUtils, Forms, {$IFDEF WINDOWS}Windows, {$ELSE UNIX} LCLIntf, LCLType, LMessages,{$ENDIF} VirtualTrees;
+  Classes, SysUtils, Forms, BaseNodeData,
+  {$IFDEF WINDOWS}Windows, {$ELSE UNIX} LCLIntf, LCLType, LMessages,{$ENDIF} VirtualTrees;
 
 //Date
 function StrToDateEx(const str: string): TDate;
 function DateToStrEx(const ADate: TDate): string;
 
 //VirtualTree
+function AddVSTNode(ATree: TBaseVirtualTree; AParentNode: PVirtualNode): PVirtualNode;
+function CopyVSTNode(ATree: TBaseVirtualTree; ATargetNode, AOldNode: PVirtualNode;
+  AAttachMode: TVTNodeAttachMode): PVirtualNode;
 function ClickOnButtonTree(Sender: TBaseVirtualTree): Boolean;
 
 //Misc
@@ -46,12 +50,40 @@ begin
   Result := DateToStr(ADate, FormatSettings);
 end;
 
+function AddVSTNode(ATree: TBaseVirtualTree; AParentNode: PVirtualNode): PVirtualNode;
+var
+  NodeData: PTreeNodeData;
+begin
+  Result   := ATree.AddChild(AParentNode);
+  NodeData := ATree.GetNodeData(Result);
+  if Assigned(NodeData) then
+    NodeData.Data := TBaseNodeData.Create;
+end;
+
+function CopyVSTNode(ATree: TBaseVirtualTree; ATargetNode, AOldNode: PVirtualNode;
+  AAttachMode: TVTNodeAttachMode): PVirtualNode;
+var
+  NodeData, OldNodeData: PTreeNodeData;
+begin
+  //Copy AOldNode and create a new node
+  Result := ATree.CopyTo(AOldNode, ATargetNode, AAttachMode, False);
+  //Create new NodeData and copy from old nodedata
+  NodeData := ATree.GetNodeData(Result);
+  if Assigned(NodeData) then
+  begin
+    NodeData.Data := CreateNodeData;
+    OldNodeData   := ATree.GetNodeData(AOldNode);
+    if Assigned(OldNodeData.Data) then
+      NodeData.Data.CopyFrom(OldNodeData.Data);
+  end;
+end;
+
 function ClickOnButtonTree(Sender: TBaseVirtualTree): Boolean;
 var
   Point   : TPoint;
-  HitInfo : ThitInfo;
+  HitInfo : THitInfo;
 begin
-  Result   := false;
+  Result   := False;
   GetCursorPos(Point);
   Point    := Sender.ScreenToClient(Point);
   Sender.GetHitTestInfoAt(Point.X,Point.Y,true,HitInfo);

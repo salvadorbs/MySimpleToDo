@@ -48,7 +48,7 @@ type
     procedure OKButtonClick(Sender: TObject);
   private
     { private declarations }
-    FNodeData: PBaseNodeData;
+    FNodeData: TBaseNodeData;
     procedure AddItemInListBox(AListBox: TListBox; AItem: string);
     procedure PopulateListBox(AListBox: TListBox; AStringList: TStringList);
     procedure RemoveItemInListBox(AListBox: TListBox);
@@ -56,7 +56,7 @@ type
     procedure SaveListBox(AListBox: TListBox; AStringList: TStringList);
   public
     { public declarations }
-    class procedure Execute(AOwner: TComponent; ANodeData: PBaseNodeData);
+    class procedure Execute(AOwner: TComponent; ANodeData: TBaseNodeData);
   end;
 
 var
@@ -195,7 +195,7 @@ begin
   ReplaceItemInListBox(lxProjects, edtProjects.Text);
 end;
 
-class procedure TfrmProperty.Execute(AOwner: TComponent; ANodeData: PBaseNodeData);
+class procedure TfrmProperty.Execute(AOwner: TComponent; ANodeData: TBaseNodeData);
 var
   frm: TfrmProperty;
 begin

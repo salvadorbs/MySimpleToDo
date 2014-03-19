@@ -24,12 +24,14 @@ type
     FText: string;
     //FColor: TColor;
 
-    function GetCompleteString: string;
+    procedure SetChecked(AValue: Boolean);
   public
     constructor Create; overload;
     destructor Destroy; override;
 
-    property Checked: Boolean read FChecked write FChecked;
+    procedure CopyFrom(ASource: TBaseNodeData);
+
+    property Checked: Boolean read FChecked write SetChecked;
     property Priority: string read FPriority write FPriority;
     property Projects: TStringList read FProjects write FProjects;
     property Contexts: TStringList read FContexts write FContexts;
@@ -38,16 +40,32 @@ type
     property DateDeadLine: TDate read FDateDeadLine write FDateDeadLine;
     property DateThresold: TDate read FDateThresold write FDateThresold;
     property Text: string read FText write FText;
-    //property CompleteString: string read GetCompleteString;
     //property Color: TColor write FColor read FColor;
   end;
   PBaseNodeData = ^TBaseNodeData;
 
+  rTreeNodeData = record
+    Data: TBaseNodeData;
+  end;
+  PTreeNodeData = ^rTreeNodeData;
+
+  function CreateNodeData: TBaseNodeData;
+
 implementation
 
-function TBaseNodeData.GetCompleteString: string;
+function CreateNodeData: TBaseNodeData;
 begin
-  Result := '';
+  Result := TBaseNodeData.Create;
+end;
+
+procedure TBaseNodeData.SetChecked(AValue: Boolean);
+begin
+  if FChecked = AValue then Exit;
+  FChecked := AValue;
+  if AValue then
+    FDateCompleted := Now
+  else
+    FDateCompleted := 0;
 end;
 
 constructor TBaseNodeData.Create;
@@ -71,6 +89,21 @@ begin
   FProjects.Free;
   FContexts.Free;
   inherited Destroy;
+end;
+
+procedure TBaseNodeData.CopyFrom(ASource: TBaseNodeData);
+begin
+  Assert(Assigned(ASource), 'ASource is not assigned!');
+  //Copy values from ASource
+  FChecked       := ASource.Checked;
+  FPriority      := ASource.Priority;
+  FProjects.Assign(ASource.Projects);
+  FContexts.Assign(ASource.Contexts);
+  FDateCreate    := ASource.DateCreate;
+  FDateCompleted := ASource.DateCompleted;
+  FDateDeadLine  := ASource.DateDeadLine;
+  FDateThresold  := ASource.DateThresold;
+  FText          := ASource.Text;
 end;
 
 end.

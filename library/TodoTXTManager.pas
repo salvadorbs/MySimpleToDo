@@ -27,7 +27,7 @@ type
     function SaveDeadLine(ANodeData: PBaseNodeData): string;
     function SaveThresold(ANodeData: PBaseNodeData): string;
 
-    function CreateNodeToDo(const ALine: string): TBaseNodeData;
+    procedure LoadNodeToDo(const ALine: string; ANode: PVirtualNode);
     function LoadCheckedState(ANodeData: TBaseNodeData; const str: string): Boolean;
     function LoadDate(ANodeData: TBaseNodeData; const str: string): Boolean;
     function LoadPriority(ANodeData: TBaseNodeData; const str: string): Boolean;
@@ -37,7 +37,6 @@ type
     function LoadThresold(ANodeData: TBaseNodeData; const str: string): Boolean;
     procedure LoadString(ANodeData: TBaseNodeData; const str, ASeparator: string);
 
-    procedure AddNodeInTree(const str: string);
   public
     constructor Create(const AFileName: string; ATree: TBaseVirtualTree);
     destructor Destroy; override;
@@ -297,35 +296,28 @@ begin
   end;
 end;
 
-procedure TToDoTXTManager.AddNodeInTree(const str: string);
-var
-  Node: PVirtualNode;
-  NodeData: PBaseNodeData;
-begin
-  if Assigned(FTree) then
-  begin
-    Node := FTree.AddChild(nil, CreateNodeToDo(str));
-    NodeData := FTree.GetNodeData(Node);
-    if Assigned(NodeData) and (NodeData.Checked) then
-      FTree.CheckState[Node] := csCheckedNormal;
-  end;
-end;
-
-function TToDoTXTManager.CreateNodeToDo(const ALine: string): TBaseNodeData;
+procedure TToDoTXTManager.LoadNodeToDo(const ALine: string; ANode: PVirtualNode);
 var
   Parser: TUniParser;
+  NodeData: PTreeNodeData;
 begin
-  Result := TBaseNodeData.Create;
-  Parser := TUniParser.Create(ALine);
-  try
-    //Process str in pieces separated by space
-    while Parser.Next(CHAR_SEPARATOR) do
-      LoadString(Result, Parser.Item, CHAR_SEPARATOR);
-    //Last piece of str to process
-    if Parser.Item <> '' then
-      LoadString(Result, Parser.Item, CHAR_SEPARATOR);
-  finally
-    Parser.Free;
+  NodeData := FTree.GetNodeData(ANode);
+  if Assigned(NodeData) then
+  begin
+    Parser := TUniParser.Create(ALine);
+    try
+      //Process str in pieces separated by space
+      while Parser.Next(CHAR_SEPARATOR) do
+        LoadString(NodeData.Data, Parser.Item, CHAR_SEPARATOR);
+      //Last piece of str to process
+      if Parser.Item <> '' then
+        LoadString(NodeData.Data, Parser.Item, CHAR_SEPARATOR);
+      //Checked node or not
+      if (NodeData.Data.Checked) then
+        FTree.CheckState[ANode] := csCheckedNormal;
+    finally
+      Parser.Free;
+    end;
   end;
 end;
 
@@ -346,6 +338,8 @@ var
   MyFile: TextFile;
   str: string;
 begin
+  Assert(Assigned(FTree), 'FTree is not assigned!');
+
   if FileExists(FFileName) then
   begin
     //Load FFileName
@@ -358,7 +352,7 @@ begin
         //Read line and create node from it
         ReadLn(MyFile, str);
         if str <> '' then
-          AddNodeInTree(str);
+          LoadNodeToDo(str, AddVSTNode(FTree, nil));
       end;
     finally
       CloseFile(MyFile);

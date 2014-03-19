@@ -18,21 +18,27 @@ object frmMain: TfrmMain
     Width = 222
     Align = alClient
     DefaultText = 'Node'
+    DragMode = dmAutomatic
+    DragType = dtVCL
     Header.AutoSizeIndex = 0
     Header.Columns = <>
     Header.DefaultHeight = 17
     Header.MainColumn = -1
     PopupMenu = pmList
     TabOrder = 0
+    TreeOptions.AutoOptions = [toAutoDropExpand, toAutoScroll, toAutoScrollOnExpand, toAutoTristateTracking]
     TreeOptions.MiscOptions = [toCheckSupport, toFullRepaintOnResize, toInitOnSave, toToggleOnDblClick, toWheelPanning, toFullRowDrag, toEditOnClick]
     TreeOptions.PaintOptions = [toShowButtons, toShowDropmark, toThemeAware, toUseBlendedImages]
-    TreeOptions.SelectionOptions = [toFullRowSelect]
+    TreeOptions.SelectionOptions = [toFullRowSelect, toRightClickSelect]
     OnChecked = vstListChecked
     OnDblClick = vstListDblClick
+    OnDragOver = vstListDragOver
+    OnDragDrop = vstListDragDrop
     OnFreeNode = vstListFreeNode
     OnGetText = vstListGetText
     OnPaintText = vstListPaintText
     OnInitNode = vstListInitNode
+    OnNodeCopied = vstListNodeCopied
   end
   object TrayIcon1: TTrayIcon
     Icon.Data = {
