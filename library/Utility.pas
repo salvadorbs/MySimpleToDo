@@ -5,8 +5,11 @@ unit Utility;
 interface
 
 uses
-  Classes, SysUtils, Forms, BaseNodeData,
+  Classes, SysUtils, Forms, BaseNodeData, sharedloggerlcl,
   {$IFDEF WINDOWS}Windows, {$ELSE UNIX} LCLIntf, LCLType, LMessages,{$ENDIF} VirtualTrees;
+
+type
+  TLogLevel = (llInfo, llWarning, llError, llException);
 
 //Date
 function StrToDateEx(const str: string): TDate;
@@ -21,6 +24,7 @@ function ClickOnButtonTree(Sender: TBaseVirtualTree): Boolean;
 //Misc
 procedure SetVistaFonts(const AForm: TCustomForm);
 function IsWindowsVista: Boolean;
+procedure Log(AMessage: string; ALogLevel: TLogLevel; AException: Exception = nil);
 
 const
   VistaFont = 'Segoe UI';
@@ -117,6 +121,16 @@ begin
 begin
   Result := False;
 {$ENDIF}
+end;
+
+procedure Log(AMessage: string; ALogLevel: TLogLevel; AException: Exception = nil);
+begin
+  case ALogLevel of
+    llError     : Logger.SendError(AMessage);
+    llException : Logger.SendException(AMessage, AException);
+    llInfo      : Logger.Send(AMessage);
+    llWarning   : Logger.SendWarning(AMessage);
+  end;
 end;
 
 end.

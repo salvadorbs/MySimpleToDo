@@ -7,7 +7,8 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus,
   StdCtrls, EditBtn, ExtCtrls, Buttons, VirtualTrees, TodoTXTManager,
-  {$IFDEF WINDOWS}ActiveX{$ELSE}FakeActiveX{$ENDIF};
+  {$IFDEF WINDOWS}ActiveX{$ELSE}FakeActiveX{$ENDIF}, filechannel, multilog,
+  sharedloggerlcl;
 
 type
 
@@ -40,7 +41,6 @@ type
       Column: TColumnIndex; TextType: TVSTTextType; var CellText: String);
     procedure vstListInitNode(Sender: TBaseVirtualTree; ParentNode,
       Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
-    procedure vstListNodeCopied(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstListPaintText(Sender: TBaseVirtualTree;
       const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
       TextType: TVSTTextType);
@@ -66,6 +66,7 @@ uses
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
+  Logger.Channels.Add(TFileChannel.Create(ChangeFileExt(Application.ExeName, '.log')));
   vstList.NodeDataSize := SizeOf(rTreeNodeData);
   FToDoManager := TToDoTXTManager.Create('todo.txt', vstList);
   FToDoManager.Load;
@@ -74,6 +75,7 @@ end;
 procedure TfrmMain.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   FToDoManager.Save;
+  Log('Closing application', llInfo);
 end;
 
 procedure TfrmMain.FormDestroy(Sender: TObject);
@@ -84,13 +86,17 @@ end;
 procedure TfrmMain.mniRemoveClick(Sender: TObject);
 begin
   if Assigned(vstList.FocusedNode) then
+  begin
+    Log('Removed focused ToDo Item', llInfo);
     vstList.DeleteNode(vstList.FocusedNode);
+  end;
 end;
 
 procedure TfrmMain.mniAddItemClick(Sender: TObject);
 var
   Node: PVirtualNode;
 begin
+  Log('Added new ToDo Item', llInfo);
   Node := AddVSTNode(vstList, nil);
   if Assigned(Node) then
     ShowProperty(vstList, Node);
@@ -117,8 +123,7 @@ begin
   if Sender is TVirtualStringTree then
   begin
     Tree := TVirtualStringTree(Sender);
-    if not(ClickOnButtonTree(Tree)) then
-      ShowProperty(Tree, Tree.FocusedNode);
+    ShowProperty(Tree, Tree.FocusedNode);
   end;
 end;
 
@@ -168,11 +173,14 @@ begin
   if Effect = DROPEFFECT_COPY then
   begin
     for I := 0 to High(Nodes) do
-      CopyVSTNode(Sender, Sender.DropTargetNode, Nodes[I], AttachMode)
+      CopyVSTNode(Sender, Sender.DropTargetNode, Nodes[I], AttachMode);
+    Log(Format('Copied %d ToDo items by Drag&Drop', [High(Nodes) + 1]), llInfo);
   end
-  else
+  else begin
     for I := 0 to High(Nodes) do
       Sender.MoveTo(Nodes[I], Sender.DropTargetNode, AttachMode, False);
+    Log(Format('Moved %d ToDo items by Drag&Drop', [High(Nodes) + 1]), llInfo);
+  end;
 end;
 
 procedure TfrmMain.vstListDragOver(Sender: TBaseVirtualTree; Source: TObject;
@@ -206,13 +214,6 @@ procedure TfrmMain.vstListInitNode(Sender: TBaseVirtualTree; ParentNode,
   Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
 begin
   Sender.CheckType[Node] := ctCheckBox;
-end;
-
-procedure TfrmMain.vstListNodeCopied(Sender: TBaseVirtualTree;
-  Node: PVirtualNode);
-
-begin
-
 end;
 
 procedure TfrmMain.vstListPaintText(Sender: TBaseVirtualTree;

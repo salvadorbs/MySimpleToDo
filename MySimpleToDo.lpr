@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, Main, PropertyNode, BaseNodeData, Utility, TodoTXTManager, SubUtils,
-  UniParser, virtualtreeview_package;
+  UniParser, virtualtreeview_package, multiloglaz;
 
 {$R *.res}
 

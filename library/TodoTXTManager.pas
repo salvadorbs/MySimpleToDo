@@ -301,6 +301,7 @@ var
   Parser: TUniParser;
   NodeData: PTreeNodeData;
 begin
+  Log('Loaded line in todo.txt format = ' + QuotedStr(ALine), llInfo);
   NodeData := FTree.GetNodeData(ANode);
   if Assigned(NodeData) then
   begin
@@ -342,6 +343,7 @@ begin
 
   if FileExists(FFileName) then
   begin
+    Log('Loading file ' + Self.FileName + ' in progress', llInfo);
     //Load FFileName
     Assign(MyFile, FFileName);
     try
@@ -354,10 +356,13 @@ begin
         if str <> '' then
           LoadNodeToDo(str, AddVSTNode(FTree, nil));
       end;
+      Log('Loading file ' + Self.FileName + ' completed', llInfo);
     finally
       CloseFile(MyFile);
     end;
-  end;
+  end
+  else
+    Log('file ' + Self.FileName + 'don''t found', llInfo);
 end;
 
 procedure TToDoTXTManager.Save;
@@ -377,6 +382,7 @@ begin
       Node := FTree.GetNext(Node);
     end;
   finally
+    Log('ToDo list saved in ' + FileName, llInfo);
     CloseFile(MyFile);
   end;
 end;
