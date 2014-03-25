@@ -42,6 +42,8 @@ type
     procedure chkDeadLineChange(Sender: TObject);
     procedure edtContextsChange(Sender: TObject);
     procedure edtProjectsChange(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormShow(Sender: TObject);
     procedure lxContextsSelectionChange(Sender: TObject; User: boolean);
     procedure lxProjectsSelectionChange(Sender: TObject; User: boolean);
@@ -56,7 +58,7 @@ type
     procedure SaveListBox(AListBox: TListBox; AStringList: TStringList);
   public
     { public declarations }
-    class procedure Execute(AOwner: TComponent; ANodeData: TBaseNodeData);
+    class function Execute(AOwner: TComponent; ANodeData: TBaseNodeData): Boolean;
   end;
 
 var
@@ -104,15 +106,6 @@ end;
 
 procedure TfrmProperty.OKButtonClick(Sender: TObject);
 begin
-  FNodeData.Text := edtText.Text;
-  if chkDeadLine.Checked then
-    FNodeData.DateDeadLine := dtdtDeadLine.Date;
-  if cbxPriority.ItemIndex <> 0 then
-    FNodeData.Priority := cbxPriority.Text
-  else
-    FNodeData.Priority := '';
-  SaveListBox(lxProjects, FNodeData.Projects);
-  SaveListBox(lxContexts, FNodeData.Contexts);
 end;
 
 procedure TfrmProperty.PopulateListBox(AListBox: TListBox; AStringList: TStringList);
@@ -165,6 +158,34 @@ begin
   btnProjectsReplace.Enabled := (edtProjects.Text <> '') and (lxProjects.ItemIndex <> -1);
 end;
 
+procedure TfrmProperty.FormClose(Sender: TObject; var CloseAction: TCloseAction
+  );
+begin
+  if ModalResult = mrOk then
+  begin
+    FNodeData.Text := edtText.Text;
+    if chkDeadLine.Checked then
+      FNodeData.DateDeadLine := dtdtDeadLine.Date;
+    if cbxPriority.ItemIndex <> 0 then
+      FNodeData.Priority := cbxPriority.Text
+    else
+      FNodeData.Priority := '';
+    SaveListBox(lxProjects, FNodeData.Projects);
+    SaveListBox(lxContexts, FNodeData.Contexts);
+  end;
+end;
+
+procedure TfrmProperty.FormCloseQuery(Sender: TObject; var CanClose: boolean);
+begin
+  CanClose := True;
+  if ModalResult = mrOK then
+  begin
+    CanClose := edtText.Text <> '';
+    if Not(CanClose) then
+      ShowMessage('Field Text is empty. Please type something.');
+  end;
+end;
+
 procedure TfrmProperty.btnContextsAddClick(Sender: TObject);
 begin
   AddItemInListBox(lxContexts, edtContexts.Text);
@@ -195,14 +216,15 @@ begin
   ReplaceItemInListBox(lxProjects, edtProjects.Text);
 end;
 
-class procedure TfrmProperty.Execute(AOwner: TComponent; ANodeData: TBaseNodeData);
+class function TfrmProperty.Execute(AOwner: TComponent; ANodeData: TBaseNodeData): Boolean;
 var
   frm: TfrmProperty;
 begin
+  Result := False;
   frm := TfrmProperty.Create(AOwner);
   try
     frm.FNodeData := ANodeData;
-    frm.ShowModal;
+    Result := (frm.ShowModal = mrOK);
   finally
     frm.Free;
   end;

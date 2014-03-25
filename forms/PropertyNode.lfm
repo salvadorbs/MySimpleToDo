@@ -6,6 +6,8 @@ object frmProperty: TfrmProperty
   Caption = 'Property'
   ClientHeight = 375
   ClientWidth = 442
+  OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
   OnShow = FormShow
   Position = poOwnerFormCenter
   LCLVersion = '1.2.0.3'

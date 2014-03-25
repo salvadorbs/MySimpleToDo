@@ -58,7 +58,7 @@ type
     FToDoManager: TToDoTXTManager;
     procedure CopyToClipboard;
     procedure PasteFromClipboard;
-    procedure ShowProperty(ATree: TBaseVirtualTree; ANode: PVirtualNode);
+    function ShowProperty(ATree: TBaseVirtualTree; ANode: PVirtualNode): Boolean;
   public
     { public declarations }
   end;
@@ -122,9 +122,15 @@ var
   Node: PVirtualNode;
 begin
   Log('Added new ToDo Item', llInfo);
-  Node := AddVSTNode(vstList, nil);
-  if Assigned(Node) then
-    ShowProperty(vstList, Node);
+  vstList.BeginUpdate;
+  try
+    Node := AddVSTNode(vstList, nil);
+    vstList.ValidateNode(Node, False);
+    if Not(ShowProperty(vstList, Node)) then
+      vstList.DeleteNode(Node);
+  finally
+    vstList.EndUpdate;
+  end;
 end;
 
 procedure TfrmMain.mniPasteClick(Sender: TObject);
@@ -288,15 +294,16 @@ begin
     TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsStrikeOut];
 end;
 
-procedure TfrmMain.ShowProperty(ATree: TBaseVirtualTree; ANode: PVirtualNode);
+function TfrmMain.ShowProperty(ATree: TBaseVirtualTree; ANode: PVirtualNode): Boolean;
 var
   NodeData: PTreeNodeData;
 begin
+  Result := False;
   if Assigned(ANode) then
   begin
     NodeData := ATree.GetNodeData(ANode);
     if Assigned(NodeData.Data) then
-      TfrmProperty.Execute(Self, NodeData.Data);
+      Result := TfrmProperty.Execute(Self, NodeData.Data);
   end;
 end;
 
