@@ -15,9 +15,7 @@ type
   private
     FFileName: string;
     FTree: TBaseVirtualTree;
-
-    procedure ExcludeLastSeparator(var FullString: string);
-    function NodeToString(const ANode: PVirtualNode): string;
+    //Save
     function SaveCheckedState(ANodeData: PBaseNodeData): string;
     function SavePriority(ANodeData: PBaseNodeData): string;
     function SaveCreateData(ANodeData: PBaseNodeData): string;
@@ -27,7 +25,8 @@ type
     function SaveDeadLine(ANodeData: PBaseNodeData): string;
     function SaveThresold(ANodeData: PBaseNodeData): string;
 
-    procedure LoadNodeToDo(const ALine: string; ANode: PVirtualNode);
+    //Load
+    procedure LoadString(ANodeData: TBaseNodeData; const str, ASeparator: string);
     function LoadCheckedState(ANodeData: TBaseNodeData; const str: string): Boolean;
     function LoadDate(ANodeData: TBaseNodeData; const str: string): Boolean;
     function LoadPriority(ANodeData: TBaseNodeData; const str: string): Boolean;
@@ -35,14 +34,17 @@ type
     function LoadContexts(ANodeData: TBaseNodeData; const str: string): Boolean;
     function LoadDeadLine(ANodeData: TBaseNodeData; const str: string): Boolean;
     function LoadThresold(ANodeData: TBaseNodeData; const str: string): Boolean;
-    procedure LoadString(ANodeData: TBaseNodeData; const str, ASeparator: string);
 
+    procedure ExcludeLastSeparator(var FullString: string);
   public
     constructor Create(const AFileName: string; ATree: TBaseVirtualTree);
     destructor Destroy; override;
 
     procedure Load;
     procedure Save;
+
+    function NodeToString(const ANode: PVirtualNode): string;
+    function StringToNode(const ALine: string): PVirtualNode;
 
     property FileName: string read FFileName write FFileName;
   end;
@@ -68,7 +70,10 @@ function TToDoTXTManager.LoadCheckedState(ANodeData: TBaseNodeData; const str: s
 begin
   Result := (str = CHAR_CHECKED);
   if Result then
+  begin
     ANodeData.Checked := Result;
+    ANodeData.DateCompleted := 0;
+  end;
 end;
 
 function TToDoTXTManager.NodeToString(const ANode: PVirtualNode): string;
@@ -296,13 +301,16 @@ begin
   end;
 end;
 
-procedure TToDoTXTManager.LoadNodeToDo(const ALine: string; ANode: PVirtualNode);
+function TToDoTXTManager.StringToNode(const ALine: string): PVirtualNode;
 var
   Parser: TUniParser;
   NodeData: PTreeNodeData;
 begin
-  Log('Loaded line in todo.txt format = ' + QuotedStr(ALine), llInfo);
-  NodeData := FTree.GetNodeData(ANode);
+  if ALine = '' then
+    Exit;
+  //Add new node and get its data
+  Result   := AddVSTNode(FTree, nil);
+  NodeData := FTree.GetNodeData(Result);
   if Assigned(NodeData) then
   begin
     Parser := TUniParser.Create(ALine);
@@ -315,7 +323,7 @@ begin
         LoadString(NodeData.Data, Parser.Item, CHAR_SEPARATOR);
       //Checked node or not
       if (NodeData.Data.Checked) then
-        FTree.CheckState[ANode] := csCheckedNormal;
+        FTree.CheckState[Result] := csCheckedNormal;
     finally
       Parser.Free;
     end;
@@ -353,8 +361,8 @@ begin
       begin
         //Read line and create node from it
         ReadLn(MyFile, str);
-        if str <> '' then
-          LoadNodeToDo(str, AddVSTNode(FTree, nil));
+        if Assigned(StringToNode(str)) then
+          Log('Loaded line in todo.txt format = ' + QuotedStr(str), llInfo);
       end;
       Log('Loading file ' + Self.FileName + ' completed', llInfo);
     finally

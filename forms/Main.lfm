@@ -1,7 +1,7 @@
 object frmMain: TfrmMain
-  Left = 479
+  Left = 651
   Height = 444
-  Top = 249
+  Top = 241
   Width = 222
   Caption = 'My Simple ToDo'
   ClientHeight = 444
@@ -27,7 +27,7 @@ object frmMain: TfrmMain
     PopupMenu = pmList
     TabOrder = 0
     TreeOptions.AutoOptions = [toAutoDropExpand, toAutoScroll, toAutoScrollOnExpand, toAutoTristateTracking]
-    TreeOptions.MiscOptions = [toCheckSupport, toFullRepaintOnResize, toInitOnSave, toToggleOnDblClick, toWheelPanning, toFullRowDrag, toEditOnClick]
+    TreeOptions.MiscOptions = [toCheckSupport, toFullRepaintOnResize, toInitOnSave, toToggleOnDblClick, toWheelPanning, toEditOnClick]
     TreeOptions.PaintOptions = [toShowButtons, toShowDropmark, toThemeAware, toUseBlendedImages]
     TreeOptions.SelectionOptions = [toFullRowSelect, toMultiSelect, toRightClickSelect]
     OnChecked = vstListChecked
@@ -84,21 +84,43 @@ object frmMain: TfrmMain
     top = 168
   end
   object pmList: TPopupMenu
+    OnPopup = pmListPopup
     left = 76
     top = 237
     object mniAddItem: TMenuItem
       Caption = 'Add new todo'
+      ShortCut = 16462
       OnClick = mniAddItemClick
     end
-    object mniRemove: TMenuItem
-      Caption = 'Remove'
-      OnClick = mniRemoveClick
+    object mniSep2: TMenuItem
+      Caption = '-'
     end
-    object mniSeparator1: TMenuItem
+    object mniCut: TMenuItem
+      Caption = 'Cut'
+      ShortCut = 16472
+      OnClick = mniCutClick
+    end
+    object mniCopy: TMenuItem
+      Caption = 'Copia'
+      ShortCut = 16451
+      OnClick = mniCopyClick
+    end
+    object mniPaste: TMenuItem
+      Caption = 'Incolla'
+      ShortCut = 16470
+      OnClick = mniPasteClick
+    end
+    object mniDelete: TMenuItem
+      Caption = 'Delete'
+      ShortCut = 46
+      OnClick = mniDeleteClick
+    end
+    object mniSep1: TMenuItem
       Caption = '-'
     end
     object mniProperties: TMenuItem
       Caption = 'Properties'
+      ShortCut = 13
       OnClick = mniPropertiesClick
     end
   end

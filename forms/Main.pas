@@ -8,14 +8,19 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus,
   StdCtrls, EditBtn, ExtCtrls, Buttons, VirtualTrees, TodoTXTManager,
   {$IFDEF WINDOWS}ActiveX{$ELSE}FakeActiveX{$ENDIF}, filechannel, multilog,
-  sharedloggerlcl;
+  sharedloggerlcl, Clipbrd;
 
 type
 
   { TfrmMain }
 
   TfrmMain = class(TForm)
-    mniRemove: TMenuItem;
+    mniPaste: TMenuItem;
+    mniCopy: TMenuItem;
+    mniCut: TMenuItem;
+    mniSep1: TMenuItem;
+    mniSep2: TMenuItem;
+    mniDelete: TMenuItem;
     mniProperties: TMenuItem;
     mniSeparator1: TMenuItem;
     mniAddItem: TMenuItem;
@@ -25,9 +30,13 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure mniRemoveClick(Sender: TObject);
+    procedure mniCopyClick(Sender: TObject);
+    procedure mniCutClick(Sender: TObject);
+    procedure mniDeleteClick(Sender: TObject);
     procedure mniAddItemClick(Sender: TObject);
+    procedure mniPasteClick(Sender: TObject);
     procedure mniPropertiesClick(Sender: TObject);
+    procedure pmListPopup(Sender: TObject);
     procedure vstListChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstListDblClick(Sender: TObject);
     procedure vstListDragDrop(Sender: TBaseVirtualTree; Source: TObject;
@@ -47,6 +56,8 @@ type
   private
     { private declarations }
     FToDoManager: TToDoTXTManager;
+    procedure CopyToClipboard;
+    procedure PasteFromClipboard;
     procedure ShowProperty(ATree: TBaseVirtualTree; ANode: PVirtualNode);
   public
     { public declarations }
@@ -83,12 +94,26 @@ begin
   FToDoManager.Free;
 end;
 
-procedure TfrmMain.mniRemoveClick(Sender: TObject);
+procedure TfrmMain.mniCopyClick(Sender: TObject);
 begin
-  if Assigned(vstList.FocusedNode) then
+  CopyToClipboard;
+end;
+
+procedure TfrmMain.mniCutClick(Sender: TObject);
+begin
+  CopyToClipboard;
+  vstList.DeleteSelectedNodes;
+end;
+
+procedure TfrmMain.mniDeleteClick(Sender: TObject);
+var
+  I: Integer;
+begin
+  I := vstList.SelectedCount;
+  if I > 0 then
   begin
-    Log('Removed focused ToDo Item', llInfo);
-    vstList.DeleteNode(vstList.FocusedNode);
+    Log(Format('Removed %d selected ToDo Items', [I]), llInfo);
+    vstList.DeleteSelectedNodes;
   end;
 end;
 
@@ -102,9 +127,23 @@ begin
     ShowProperty(vstList, Node);
 end;
 
+procedure TfrmMain.mniPasteClick(Sender: TObject);
+begin
+  PasteFromClipboard;
+end;
+
 procedure TfrmMain.mniPropertiesClick(Sender: TObject);
 begin
   ShowProperty(vstList, vstList.FocusedNode);
+end;
+
+procedure TfrmMain.pmListPopup(Sender: TObject);
+begin
+  //Enable menu items based of Node or clipboard
+  mniCut.Enabled   := (vstList.SelectedCount > 0);
+  mniCopy.Enabled  := (vstList.SelectedCount > 0);
+  mniPaste.Enabled := (Clipboard.AsText <> '');
+  mniProperties.Enabled := (vstList.SelectedCount > 0);
 end;
 
 procedure TfrmMain.vstListChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -113,7 +152,7 @@ var
 begin
   NodeData := Sender.GetNodeData(Node);
   if Assigned(NodeData.Data) then
-    NodeData.Data.Checked := Sender.CheckState[Node] = csCheckedNormal;
+    NodeData.Data.Checked := (Sender.CheckState[Node] = csCheckedNormal);
 end;
 
 procedure TfrmMain.vstListDblClick(Sender: TObject);
@@ -160,6 +199,25 @@ var
     end;
   end;
 
+  function CheckTargetNode: boolean;
+  var
+    J:Integer;
+  begin
+    //We must check if a selected nodes (and first previous node) is DropTargetNode
+    //If it is true, we must abort Drag&Drop move
+    Result := True;
+    if High(Nodes) > 0 then
+    begin
+      if Sender.GetPrevious(Nodes[0]) = Sender.DropTargetNode then
+        Exit(False);
+      for J := 0 to High(Nodes) do
+      begin
+        if Nodes[J] = Sender.DropTargetNode then
+          Exit(False);
+      end;
+    end;
+  end;
+
 begin
   case Mode of
     dmAbove  : AttachMode := amInsertBefore;
@@ -172,14 +230,20 @@ begin
   Nodes := Sender.GetSortedSelection(True);
   if Effect = DROPEFFECT_COPY then
   begin
+    //Copy nodes
     for I := 0 to High(Nodes) do
       CopyVSTNode(Sender, Sender.DropTargetNode, Nodes[I], AttachMode);
     Log(Format('Copied %d ToDo items by Drag&Drop', [High(Nodes) + 1]), llInfo);
   end
   else begin
-    for I := 0 to High(Nodes) do
-      Sender.MoveTo(Nodes[I], Sender.DropTargetNode, AttachMode, False);
-    Log(Format('Moved %d ToDo items by Drag&Drop', [High(Nodes) + 1]), llInfo);
+    //If a selected nodes is DropTargetNode, we must abort drag & drop
+    if CheckTargetNode then
+    begin
+      //Move nodes in new location
+      for I := 0 to High(Nodes) do
+        Sender.MoveTo(Nodes[I], Sender.DropTargetNode, AttachMode, False);
+      Log(Format('Moved %d ToDo items by Drag&Drop', [High(Nodes) + 1]), llInfo);
+    end;
   end;
 end;
 
@@ -233,6 +297,45 @@ begin
     NodeData := ATree.GetNodeData(ANode);
     if Assigned(NodeData.Data) then
       TfrmProperty.Execute(Self, NodeData.Data);
+  end;
+end;
+
+procedure TfrmMain.CopyToClipboard;
+var
+  I: Integer;
+  sTemp: string;
+  Nodes: TNodeArray;
+begin
+  sTemp := '';
+  if vstList.SelectedCount > 0 then
+  begin
+    //Convert selected nodes in string
+    Nodes := vstList.GetSortedSelection(False);
+    for I := 0 to High(Nodes) do
+    begin
+      if sTemp = '' then
+        sTemp := FToDoManager.NodeToString(Nodes[I])
+      else
+        sTemp := sTemp + LineEnding + FToDoManager.NodeToString(Nodes[I])
+    end;
+    //Set sTemp in clipboard
+    if sTemp <> '' then
+      Clipboard.AsText := sTemp;
+  end;
+end;
+
+procedure TfrmMain.PasteFromClipboard;
+var
+  I: Integer;
+  StringList: TStringList;
+begin
+  StringList := TStringList.Create;
+  try
+    StringList.Text := Clipboard.AsText;
+    for I := 0 to StringList.Count - 1 do
+      FToDoManager.StringToNode(StringList[I]);
+  finally
+    StringList.Free;
   end;
 end;
 
