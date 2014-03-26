@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus,
   StdCtrls, EditBtn, ExtCtrls, Buttons, VirtualTrees, TodoTXTManager,
   {$IFDEF WINDOWS}ActiveX{$ELSE}FakeActiveX{$ENDIF}, filechannel, multilog,
-  sharedloggerlcl, Clipbrd;
+  sharedloggerlcl, UniqueInstance, Clipbrd;
 
 type
 
@@ -25,7 +25,9 @@ type
     mniSeparator1: TMenuItem;
     mniAddItem: TMenuItem;
     pmList: TPopupMenu;
+    pmTrayicon: TPopupMenu;
     TrayIcon1: TTrayIcon;
+    UniqueInstance1: TUniqueInstance;
     vstList: TVirtualStringTree;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -37,6 +39,9 @@ type
     procedure mniPasteClick(Sender: TObject);
     procedure mniPropertiesClick(Sender: TObject);
     procedure pmListPopup(Sender: TObject);
+    procedure ShowMainForm;
+    procedure UniqueInstance1OtherInstance(Sender: TObject;
+      ParamCount: Integer; Parameters: array of String);
     procedure vstListChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstListDblClick(Sender: TObject);
     procedure vstListDragDrop(Sender: TBaseVirtualTree; Source: TObject;
@@ -150,6 +155,17 @@ begin
   mniCopy.Enabled  := (vstList.SelectedCount > 0);
   mniPaste.Enabled := (Clipboard.AsText <> '');
   mniProperties.Enabled := (vstList.SelectedCount > 0);
+end;
+
+procedure TfrmMain.ShowMainForm;
+begin
+  Application.Restore;
+end;
+
+procedure TfrmMain.UniqueInstance1OtherInstance(Sender: TObject;
+  ParamCount: Integer; Parameters: array of String);
+begin
+  ShowMainForm;
 end;
 
 procedure TfrmMain.vstListChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);

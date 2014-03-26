@@ -80,13 +80,13 @@ object frmMain: TfrmMain
       0000
     }
     Visible = True
-    left = 104
-    top = 168
+    left = 88
+    top = 152
   end
   object pmList: TPopupMenu
     OnPopup = pmListPopup
-    left = 76
-    top = 237
+    left = 88
+    top = 96
     object mniAddItem: TMenuItem
       Caption = 'Add new todo'
       ShortCut = 16462
@@ -123,5 +123,16 @@ object frmMain: TfrmMain
       ShortCut = 13
       OnClick = mniPropertiesClick
     end
+  end
+  object UniqueInstance1: TUniqueInstance
+    Enabled = True
+    Identifier = 'MySimpleToDo'
+    OnOtherInstance = UniqueInstance1OtherInstance
+    left = 88
+    top = 208
+  end
+  object pmTrayicon: TPopupMenu
+    left = 88
+    top = 48
   end
 end
