@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus,
   StdCtrls, EditBtn, ExtCtrls, Buttons, VirtualTrees, TodoTXTManager,
   {$IFDEF WINDOWS}ActiveX{$ELSE}FakeActiveX{$ENDIF}, filechannel, sharedloggerlcl,
-  UniqueInstance, Clipbrd;
+  UniqueInstance, Clipbrd, ColorUtils;
 
 type
 
@@ -47,6 +47,9 @@ type
     procedure TrayIcon1DblClick(Sender: TObject);
     procedure UniqueInstance1OtherInstance(Sender: TObject;
       ParamCount: Integer; Parameters: array of String);
+    procedure vstListBeforeCellPaint(Sender: TBaseVirtualTree;
+      TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
+      CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
     procedure vstListChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstListDblClick(Sender: TObject);
     procedure vstListDragDrop(Sender: TBaseVirtualTree; Source: TObject;
@@ -256,6 +259,18 @@ begin
   ShowMainForm(Sender);
 end;
 
+procedure TfrmMain.vstListBeforeCellPaint(Sender: TBaseVirtualTree;
+  TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
+  CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
+var
+  NodeData: PTreeNodeData;
+begin
+  NodeData := Sender.GetNodeData(Node);
+  if Assigned(NodeData.Data) then
+    TargetCanvas.GradientFill(CellRect, NodeData.Data.Color,
+                              LighterColor(NodeData.Data.Color, 25), gdVertical);
+end;
+
 procedure TfrmMain.vstListChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
 var
   NodeData: PTreeNodeData;
@@ -394,7 +409,15 @@ end;
 procedure TfrmMain.vstListPaintText(Sender: TBaseVirtualTree;
   const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
   TextType: TVSTTextType);
+var
+  NodeData: PTreeNodeData;
 begin
+  NodeData := Sender.GetNodeData(Node);
+  if Assigned(NodeData.Data) then
+  begin
+    if NodeData.Data.Color <> clNone then
+      TargetCanvas.Font.Color := InvertColor(NodeData.Data.Color);
+  end;
   if Sender.CheckState[Node] = csCheckedNormal then
     TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsStrikeOut];
 end;

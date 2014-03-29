@@ -87,12 +87,10 @@ var
   Point   : TPoint;
   HitInfo : THitInfo;
 begin
-  Result   := False;
   GetCursorPos(Point);
   Point    := Sender.ScreenToClient(Point);
-  Sender.GetHitTestInfoAt(Point.X,Point.Y,true,HitInfo);
-  if hiOnItemButton in hitinfo.HitPositions then
-    Result := True;
+  Sender.GetHitTestInfoAt(Point.X, Point.Y, True, HitInfo);
+    Result := hiOnItemButton in hitinfo.HitPositions;
 end;
 
 procedure SetVistaFonts(const AForm: TCustomForm);

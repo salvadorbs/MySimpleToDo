@@ -5,7 +5,7 @@ unit BaseNodeData;
 interface
 
 uses
-  Classes, SysUtils, VirtualTrees;
+  Classes, SysUtils, VirtualTrees, Graphics;
 
 type
 
@@ -22,7 +22,7 @@ type
     FDateDeadLine: TDate;
     FDateThresold: TDate;
     FText: string;
-    //FColor: TColor;
+    FColor: TColor;
 
     procedure SetChecked(AValue: Boolean);
   public
@@ -40,7 +40,7 @@ type
     property DateDeadLine: TDate read FDateDeadLine write FDateDeadLine;
     property DateThresold: TDate read FDateThresold write FDateThresold;
     property Text: string read FText write FText;
-    //property Color: TColor write FColor read FColor;
+    property Color: TColor read FColor write FColor;
   end;
   PBaseNodeData = ^TBaseNodeData;
 
@@ -79,7 +79,7 @@ begin
   FDateDeadLine  := 0;
   FDateThresold  := 0;
   FText          := '';
-  //FColor := ;
+  FColor         := clNone;
 end;
 
 destructor TBaseNodeData.Destroy;

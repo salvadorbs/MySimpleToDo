@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  EditBtn, ButtonPanel, BaseNodeData;
+  EditBtn, ButtonPanel, ColorBox, BaseNodeData;
 
 type
 
@@ -22,6 +22,7 @@ type
     btnProjectsReplace: TButton;
     cbxPriority: TComboBox;
     chkDeadLine: TCheckBox;
+    btnColor: TColorButton;
     dtdtDeadLine: TDateEdit;
     edtContexts: TEdit;
     edtProjects: TEdit;
@@ -30,6 +31,7 @@ type
     grbItem: TGroupBox;
     grbProjects: TGroupBox;
     lblPriority: TLabel;
+    lblColor: TLabel;
     lblText: TLabel;
     lxContexts: TListBox;
     lxProjects: TListBox;
@@ -84,6 +86,7 @@ begin
       cbxPriority.ItemIndex := 0;
     PopulateListBox(lxProjects, FNodeData.Projects);
     PopulateListBox(lxContexts, FNodeData.Contexts);
+    btnColor.ButtonColor := FNodeData.Color;
     //Visual events
     edtContextsChange(Sender);
     edtProjectsChange(Sender);
@@ -172,6 +175,7 @@ begin
       FNodeData.Priority := '';
     SaveListBox(lxProjects, FNodeData.Projects);
     SaveListBox(lxContexts, FNodeData.Contexts);
+    FNodeData.Color := btnColor.ButtonColor;
   end;
 end;
 

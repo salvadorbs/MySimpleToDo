@@ -216,6 +216,23 @@ object frmProperty: TfrmProperty
         TabOrder = 3
       end
     end
+    object btnColor: TColorButton
+      Left = 304
+      Height = 25
+      Top = 70
+      Width = 75
+      BorderWidth = 2
+      ButtonColorSize = 16
+      ButtonColor = clNone
+    end
+    object lblColor: TLabel
+      Left = 304
+      Height = 15
+      Top = 52
+      Width = 29
+      Caption = 'Color'
+      ParentColor = False
+    end
   end
   object btnPanel: TButtonPanel
     Left = 6

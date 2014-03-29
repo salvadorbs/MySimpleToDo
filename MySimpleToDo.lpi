@@ -42,7 +42,7 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="8">
+    <Units Count="9">
       <Unit0>
         <Filename Value="MySimpleToDo.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -89,6 +89,11 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="propertynode"/>
       </Unit7>
+      <Unit8>
+        <Filename Value="library\ColorUtils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ColorUtils"/>
+      </Unit8>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

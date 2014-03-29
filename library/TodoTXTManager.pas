@@ -5,7 +5,7 @@ unit TodoTXTManager;
 interface
 
 uses
-  Classes, SysUtils, VirtualTrees, BaseNodeData;
+  Classes, SysUtils, VirtualTrees, BaseNodeData, Graphics, ColorUtils;
 
 type
   { TToDoTXTManager }
@@ -24,6 +24,7 @@ type
     function SaveContexts(ANodeData: PBaseNodeData): string;
     function SaveDeadLine(ANodeData: PBaseNodeData): string;
     function SaveThresold(ANodeData: PBaseNodeData): string;
+    function SaveColor(ANodeData: PBaseNodeData): string;
 
     //Load
     procedure LoadString(ANodeData: TBaseNodeData; const str, ASeparator: string);
@@ -34,6 +35,7 @@ type
     function LoadContexts(ANodeData: TBaseNodeData; const str: string): Boolean;
     function LoadDeadLine(ANodeData: TBaseNodeData; const str: string): Boolean;
     function LoadThresold(ANodeData: TBaseNodeData; const str: string): Boolean;
+    function LoadColor(ANodeData: TBaseNodeData; const str: string): Boolean;
 
     procedure ExcludeLastSeparator(var FullString: string);
   public
@@ -58,6 +60,7 @@ const
 
   KEY_DEADLINE   = 'due';
   KEY_THRESOLD   = 't';
+  KEY_COLOR      = 'color';
 
 implementation
 
@@ -100,6 +103,7 @@ begin
                   PrepareString(SaveProjects) +
                   PrepareString(SaveContexts) +
                   PrepareString(SaveDeadLine) +
+                  PrepareString(SaveColor) +
                   SaveThresold(NodeData);
     ExcludeLastSeparator(Result);
   end;
@@ -182,6 +186,12 @@ begin
   Result := '';
   if ANodeData.DateThresold <> 0 then
     Result := KEY_THRESOLD + CHAR_SEPARATORKEY + DateToStrEx(ANodeData.DateThresold);
+end;
+
+function TToDoTXTManager.SaveColor(ANodeData: PBaseNodeData): string;
+begin
+  if ANodeData.Color <> clNone then
+    Result := KEY_COLOR + CHAR_SEPARATORKEY + ColorToHtml(ANodeData.Color);
 end;
 
 function TToDoTXTManager.LoadDate(ANodeData: TBaseNodeData; const str: string): Boolean;
@@ -281,6 +291,24 @@ begin
   end;
 end;
 
+function TToDoTXTManager.LoadColor(ANodeData: TBaseNodeData; const str: string
+  ): Boolean;
+var
+  dtDate: TDate;
+  StrArray: TStrArray;
+begin
+  Result := False;
+  StrArray := Separate(str, CHAR_SEPARATORKEY);
+  if Length(StrArray) = 2 then
+  begin
+    if StrArray[0] = KEY_COLOR then
+    begin
+      Result := True;
+      ANodeData.Color := HtmlToColor(StrArray[1]);
+    end;
+  end;
+end;
+
 procedure TToDoTXTManager.LoadString(ANodeData: TBaseNodeData; const str, ASeparator: string);
 begin
   if Assigned (ANodeData) then
@@ -292,6 +320,7 @@ begin
     if not LoadContexts(ANodeData, str) then
     if not LoadDeadLine(ANodeData, str) then
     if not LoadThresold(ANodeData, str) then
+    if not LoadColor(ANodeData, str) then
     begin
       if ANodeData.Text = '' then
         ANodeData.Text := str
