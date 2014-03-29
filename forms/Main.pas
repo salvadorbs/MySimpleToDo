@@ -26,7 +26,7 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus,
   StdCtrls, EditBtn, ExtCtrls, Buttons, VirtualTrees, TodoTXTManager,
   {$IFDEF WINDOWS}ActiveX{$ELSE}FakeActiveX{$ENDIF}, filechannel, sharedloggerlcl,
-  UniqueInstance, Clipbrd, ColorUtils;
+  UniqueInstance, Clipbrd, ColorUtils, TrayMenu;
 
 type
 
@@ -47,7 +47,6 @@ type
     TrayIcon1: TTrayIcon;
     UniqueInstance1: TUniqueInstance;
     vstList: TVirtualStringTree;
-    procedure DoExitApp(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
@@ -61,7 +60,6 @@ type
     procedure mniPropertiesClick(Sender: TObject);
     procedure pmListPopup(Sender: TObject);
     procedure pmTrayiconPopup(Sender: TObject);
-    procedure ToDoMenuItemClick(Sender: TObject);
     procedure TrayIcon1DblClick(Sender: TObject);
     procedure UniqueInstance1OtherInstance(Sender: TObject;
       ParamCount: Integer; Parameters: array of String);
@@ -91,19 +89,17 @@ type
   private
     { private declarations }
     FToDoManager: TToDoTXTManager;
+    FTrayMenu: TTrayMenu;
     FShutDownTime: Boolean;
     procedure CopyToClipboard;
-    procedure ShowMainForm(Sender: TObject);
-    procedure HideMainForm;
     procedure PasteFromClipboard;
     function ShowProperty(ATree: TBaseVirtualTree; ANode: PVirtualNode): Boolean;
-    procedure CreateToDoListInPopupMenu(Sender: TBaseVirtualTree; Node: PVirtualNode;
-                                        Data: Pointer; var Abort: Boolean);
-    procedure CreateMenuSeparator(AParentItem: TMenuItem);
-    procedure CreateMenuHeader(AParentItem: TMenuItem);
-    procedure CreateMenuFooter(AParentItem: TMenuItem);
+    procedure ShowMainForm(Sender: TObject);
+    procedure HideMainForm;
   public
     { public declarations }
+    procedure ExitApp(Sender: TObject);
+    procedure ShowApp(Sender: TObject);
   end;
 
 var
@@ -122,10 +118,11 @@ procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   FShutDownTime := False;
   Logger.Channels.Add(TFileChannel.Create(ChangeFileExt(Application.ExeName, '.log')));
+  FTrayMenu := TTrayMenu.Create(pmTrayicon, vstList);
   FToDoManager := TToDoTXTManager.Create('todo.txt', vstList);
   FToDoManager.Load;
-  //When user shutdown windows, MySimpletodo call DoExitApp
-  Application.OnEndSession := DoExitApp;
+  //When user shutdown windows, MySimpletodo call ExitApp
+  Application.OnEndSession := ExitApp;
 end;
 
 procedure TfrmMain.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -142,15 +139,10 @@ begin
     HideMainForm;
 end;
 
-procedure TfrmMain.DoExitApp(Sender: TObject);
-begin
-  FShutDownTime := True;
-  Close;
-end;
-
 procedure TfrmMain.FormDestroy(Sender: TObject);
 begin
   FToDoManager.Free;
+  FTrayMenu.Free;
 end;
 
 procedure TfrmMain.FormWindowStateChange(Sender: TObject);
@@ -222,15 +214,7 @@ end;
 
 procedure TfrmMain.pmTrayiconPopup(Sender: TObject);
 begin
-  pmTrayIcon.Items.Clear;
-  //Header
-  CreateMenuHeader(pmTrayicon.Items);
-  //List
-  CreateMenuSeparator(pmTrayicon.Items);
-  vstList.IterateSubtree(nil, CreateToDoListInPopupMenu, @pmTrayicon);
-  CreateMenuSeparator(pmTrayicon.Items);
-  //Footer
-  CreateMenuFooter(pmTrayicon.Items);
+  FTrayMenu.Populate;
 end;
 
 procedure TfrmMain.ShowMainForm(Sender: TObject);
@@ -240,38 +224,9 @@ begin
   Application.Restore;
 end;
 
-procedure TfrmMain.ToDoMenuItemClick(Sender: TObject);
-var
-  Node: PVirtualNode;
-  NodeData: PTreeNodeData;
-begin
-  Node := vstList.GetFirst;
-  while Assigned(Node) do
-  begin
-    if Cardinal(TMenuItem(Sender).Tag) = Node.Index then
-    begin
-      NodeData := vstList.GetNodeData(Node);
-      if Assigned(NodeData.Data) then
-      begin
-        //NodeData.Data.Checked := Not(TMenuItem(Sender).Checked);
-        if NodeData.Data.Checked then
-          vstList.CheckState[Node] := csUncheckedNormal
-        else
-          vstList.CheckState[Node] := csCheckedNormal;
-      end;
-      Break;
-    end;
-    Node := vstList.GetNext(Node);
-  end;
-end;
-
 procedure TfrmMain.TrayIcon1DblClick(Sender: TObject);
 begin
-  //Show or hide main form
-  if Self.Visible then
-    HideMainForm
-  else
-    ShowMainForm(Sender);
+  ShowApp(Sender);
 end;
 
 procedure TfrmMain.UniqueInstance1OtherInstance(Sender: TObject;
@@ -477,61 +432,6 @@ begin
   end;
 end;
 
-procedure TfrmMain.CreateToDoListInPopupMenu(Sender: TBaseVirtualTree;
-  Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
-var
-  PopupMenu : TPopupMenu;
-  MenuItem  : TMenuItem;
-  NodeData  : PTreeNodeData;
-begin
-  PopupMenu := TPopupMenu(Data^);
-  if Assigned(PopupMenu) then
-  begin
-    NodeData := Sender.GetNodeData(Node);
-    if Assigned(NodeData.Data) then
-    begin
-      //Create menuitem with ToDo's data
-      MenuItem := TMenuItem.Create(PopupMenu);
-      MenuItem.Caption := NodeData.Data.Text;
-      MenuItem.Checked := NodeData.Data.Checked;
-      MenuItem.Tag := Node.Index;
-      MenuItem.OnClick := ToDoMenuItemClick;
-      //Add menuitem in popupmenu
-      PopupMenu.Items.Add(MenuItem);
-    end;
-  end;
-end;
-
-procedure TfrmMain.CreateMenuSeparator(AParentItem: TMenuItem);
-var
-  MenuItem: TMenuItem;
-begin
-  MenuItem := TMenuItem.Create(AParentItem);
-  MenuItem.Caption := '-';
-  AParentItem.Add(MenuItem);
-end;
-
-procedure TfrmMain.CreateMenuHeader(AParentItem: TMenuItem);
-var
-  MenuItem: TMenuItem;
-begin
-  MenuItem := TMenuItem.Create(AParentItem);
-  MenuItem.Caption := 'Show MySimpleToDo';
-  MenuItem.OnClick := ShowMainForm;
-  MenuItem.Default := True;
-  AParentItem.Add(MenuItem);
-end;
-
-procedure TfrmMain.CreateMenuFooter(AParentItem: TMenuItem);
-var
-  MenuItem: TMenuItem;
-begin
-  MenuItem := TMenuItem.Create(AParentItem);
-  MenuItem.Caption := 'Exit';
-  MenuItem.OnClick := DoExitApp;
-  AParentItem.Add(MenuItem);
-end;
-
 procedure TfrmMain.CopyToClipboard;
 var
   I: Integer;
@@ -557,6 +457,21 @@ begin
       Log(Format('Copied ToDo item %s in clipboard',[QuotedStr(sTemp)]), llInfo);
     end;
   end;
+end;
+
+procedure TfrmMain.ExitApp(Sender: TObject);
+begin
+  FShutDownTime := True;
+  Close;
+end;
+
+procedure TfrmMain.ShowApp(Sender: TObject);
+begin
+  //Show or hide main form based of frmMain.Visible
+  if Self.Visible then
+    HideMainForm
+  else
+    ShowMainForm(Sender);
 end;
 
 procedure TfrmMain.HideMainForm;

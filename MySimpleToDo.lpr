@@ -9,7 +9,7 @@ uses
   Interfaces, // this includes the LCL widgetset
   Forms, Main, PropertyNode, BaseNodeData, Utility, TodoTXTManager, SubUtils,
   UniParser, ColorUtils, virtualtreeview_package, multiloglaz,
-  uniqueinstance_package;
+  uniqueinstance_package, TrayMenu;
 
 {$R *.res}
 
