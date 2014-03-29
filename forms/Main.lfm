@@ -38,11 +38,10 @@ object frmMain: TfrmMain
     OnDblClick = vstListDblClick
     OnDragOver = vstListDragOver
     OnDragDrop = vstListDragDrop
-    OnEdited = vstListEdited
-    OnEditing = vstListEditing
     OnFreeNode = vstListFreeNode
     OnGetText = vstListGetText
     OnPaintText = vstListPaintText
+    OnGetNodeDataSize = vstListGetNodeDataSize
     OnInitNode = vstListInitNode
     OnNewText = vstListNewText
   end

@@ -58,11 +58,9 @@ type
     procedure vstListDragOver(Sender: TBaseVirtualTree; Source: TObject;
       Shift: TShiftState; State: TDragState; const Pt: TPoint; Mode: TDropMode;
       var Effect: LongWord; var Accept: Boolean);
-    procedure vstListEdited(Sender: TBaseVirtualTree; Node: PVirtualNode;
-      Column: TColumnIndex);
-    procedure vstListEditing(Sender: TBaseVirtualTree; Node: PVirtualNode;
-      Column: TColumnIndex; var Allowed: Boolean);
     procedure vstListFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
+    procedure vstListGetNodeDataSize(Sender: TBaseVirtualTree;
+      var NodeDataSize: Integer);
     procedure vstListGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType; var CellText: String);
     procedure vstListInitNode(Sender: TBaseVirtualTree; ParentNode,
@@ -106,9 +104,10 @@ procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   FShutDownTime := False;
   Logger.Channels.Add(TFileChannel.Create(ChangeFileExt(Application.ExeName, '.log')));
-  vstList.NodeDataSize := SizeOf(rTreeNodeData);
   FToDoManager := TToDoTXTManager.Create('todo.txt', vstList);
   FToDoManager.Load;
+  //When user shutdown windows, MySimpletodo call DoExitApp
+  Application.OnEndSession := DoExitApp;
 end;
 
 procedure TfrmMain.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -122,9 +121,7 @@ begin
   CanClose := FShutDownTime;
   //If user close window, hide form and taskbar icon
   if not (CanClose) then
-  begin
     HideMainForm;
-  end;
 end;
 
 procedure TfrmMain.DoExitApp(Sender: TObject);
@@ -252,7 +249,8 @@ end;
 
 procedure TfrmMain.TrayIcon1DblClick(Sender: TObject);
 begin
-  if Visible then
+  //Show or hide main form
+  if Self.Visible then
     HideMainForm
   else
     ShowMainForm(Sender);
@@ -261,7 +259,7 @@ end;
 procedure TfrmMain.UniqueInstance1OtherInstance(Sender: TObject;
   ParamCount: Integer; Parameters: array of String);
 begin
-  //In case of user execute another instance, show main form
+  //In case of user execute another instance, restore application and show main form
   ShowMainForm(Sender);
 end;
 
@@ -284,7 +282,11 @@ begin
   NodeData := Sender.GetNodeData(Node);
   if Assigned(NodeData.Data) then
     if (NodeData.Data.Checked <> (Sender.CheckState[Node] = csCheckedNormal)) then
+    begin
       NodeData.Data.Checked := (Sender.CheckState[Node] = csCheckedNormal);
+      Log(Format('Check item %s to %s', [NodeData.Data.Text, BoolToStr(NodeData.Data.Checked)]),
+          llInfo);
+    end;
 end;
 
 procedure TfrmMain.vstListDblClick(Sender: TObject);
@@ -386,18 +388,6 @@ begin
   Accept := (Sender = Source);
 end;
 
-procedure TfrmMain.vstListEdited(Sender: TBaseVirtualTree; Node: PVirtualNode;
-  Column: TColumnIndex);
-begin
-
-end;
-
-procedure TfrmMain.vstListEditing(Sender: TBaseVirtualTree; Node: PVirtualNode;
-  Column: TColumnIndex; var Allowed: Boolean);
-begin
-
-end;
-
 procedure TfrmMain.vstListFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode
   );
 var
@@ -406,6 +396,12 @@ begin
   NodeData := Sender.GetNodeData(Node);
   if Assigned(NodeData.Data) then
     NodeData.Data.Free;
+end;
+
+procedure TfrmMain.vstListGetNodeDataSize(Sender: TBaseVirtualTree;
+  var NodeDataSize: Integer);
+begin
+  NodeDataSize := SizeOf(rTreeNodeData);
 end;
 
 procedure TfrmMain.vstListGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
@@ -514,7 +510,7 @@ var
 begin
   MenuItem := TMenuItem.Create(AParentItem);
   MenuItem.Caption := 'Exit';
-  MenuItem.OnClick :=DoExitApp;
+  MenuItem.OnClick := DoExitApp;
   AParentItem.Add(MenuItem);
 end;
 
@@ -538,7 +534,10 @@ begin
     end;
     //Set sTemp in clipboard
     if sTemp <> '' then
+    begin
       Clipboard.AsText := sTemp;
+      Log(Format('Copied ToDo item %s in clipboard',[QuotedStr(sTemp)]), llInfo);
+    end;
   end;
 end;
 
@@ -557,8 +556,12 @@ begin
   StringList := TStringList.Create;
   try
     StringList.Text := Clipboard.AsText;
-    for I := 0 to StringList.Count - 1 do
-      FToDoManager.StringToNode(StringList[I]);
+    if Clipboard.AsText <> '' then
+    begin
+      for I := 0 to StringList.Count - 1 do
+        FToDoManager.StringToNode(StringList[I]);
+      Log(Format('Paste text %s and create a new todo item', [QuotedStr(Clipboard.AsText)]), llInfo);
+    end;
   finally
     StringList.Free;
   end;
