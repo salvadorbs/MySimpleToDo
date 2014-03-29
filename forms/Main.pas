@@ -100,6 +100,7 @@ type
     { public declarations }
     procedure ExitApp(Sender: TObject);
     procedure ShowApp(Sender: TObject);
+    procedure AddNewToDoItem;
   end;
 
 var
@@ -178,19 +179,8 @@ begin
 end;
 
 procedure TfrmMain.mniAddItemClick(Sender: TObject);
-var
-  Node: PVirtualNode;
 begin
-  Log('Added new ToDo Item', llInfo);
-  vstList.BeginUpdate;
-  try
-    Node := AddVSTNode(vstList, nil);
-    vstList.ValidateNode(Node, False);
-    if Not(ShowProperty(vstList, Node)) then
-      vstList.DeleteNode(Node);
-  finally
-    vstList.EndUpdate;
-  end;
+  AddNewToDoItem;
 end;
 
 procedure TfrmMain.mniPasteClick(Sender: TObject);
@@ -456,6 +446,22 @@ begin
       Clipboard.AsText := sTemp;
       Log(Format('Copied ToDo item %s in clipboard',[QuotedStr(sTemp)]), llInfo);
     end;
+  end;
+end;
+
+procedure TfrmMain.AddNewToDoItem;
+var
+  Node: PVirtualNode;
+begin
+  Log('Added new ToDo Item', llInfo);
+  vstList.BeginUpdate;
+  try
+    Node := AddVSTNode(vstList, nil);
+    vstList.ValidateNode(Node, False);
+    if not(ShowProperty(vstList, Node)) then
+      vstList.DeleteNode(Node);
+  finally
+    vstList.EndUpdate;
   end;
 end;
 

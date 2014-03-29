@@ -16,20 +16,19 @@ type
     FPopupMenu: TPopupMenu;
     FTree: TBaseVirtualTree;
 
-    procedure CreateToDoListInPopupMenu(Sender: TBaseVirtualTree; Node: PVirtualNode;
-                                        Data: Pointer; var Abort: Boolean);
-    procedure CreateMenuSeparator(AParentItem: TMenuItem);
-    procedure CreateMenuHeader(AParentItem: TMenuItem);
-    procedure CreateMenuFooter(AParentItem: TMenuItem);
+    procedure CreateToDoList(Sender: TBaseVirtualTree; Node: PVirtualNode;
+                             Data: Pointer; var Abort: Boolean);
+    function CreateMenuItem(AParentItem: TMenuItem; ACaption: string;
+                            AOnClick: TNotifyEvent; ADefault: Boolean = False): TMenuItem;
+    procedure CreateSeparator(AParentItem: TMenuItem);
     //Events
     procedure ToDoMenuItemClick(Sender: TObject);
+    procedure AddNewToDoItem(Sender: TObject);
   public
     constructor Create(APopupMenu: TPopupMenu; ATree: TBaseVirtualTree);
     destructor Destroy; override;
 
     procedure Populate;
-
-    property PopupMenu: TPopupMenu read FPopupMenu;
   end;
 
 implementation
@@ -53,14 +52,16 @@ end;
 procedure TTrayMenu.Populate;
 begin
   FPopupMenu.Items.Clear;
+  //Create TrayMenu's items
   //Header
-  CreateMenuHeader(FPopupMenu.Items);
+  CreateMenuItem(FPopupMenu.Items, 'Show MySimpleToDo', frmMain.ShowApp, True);
+  CreateMenuItem(FPopupMenu.Items, 'Add a new ToDo item', AddNewToDoItem);
   //List
-  CreateMenuSeparator(FPopupMenu.Items);
-  FTree.IterateSubtree(nil, CreateToDoListInPopupMenu, @FPopupMenu);
-  CreateMenuSeparator(FPopupMenu.Items);
+  CreateSeparator(FPopupMenu.Items);
+  FTree.IterateSubtree(nil, CreateToDoList, @FPopupMenu);
+  CreateSeparator(FPopupMenu.Items);
   //Footer
-  CreateMenuFooter(FPopupMenu.Items);
+  CreateMenuItem(FPopupMenu.Items, 'Exit', frmMain.ExitApp);
 end;
 
 procedure TTrayMenu.ToDoMenuItemClick(Sender: TObject);
@@ -71,6 +72,7 @@ begin
   Assert(Assigned(FTree), 'FTree is not assigned!');
 
   Node := FTree.GetFirst;
+  //Find right node to check/uncheck
   while Assigned(Node) do
   begin
     if Cardinal(TMenuItem(Sender).Tag) = Node.Index then
@@ -78,7 +80,7 @@ begin
       NodeData := FTree.GetNodeData(Node);
       if Assigned(NodeData.Data) then
       begin
-        //NodeData.Data.Checked := Not(TMenuItem(Sender).Checked);
+        //Check/Uncheck item
         if NodeData.Data.Checked then
           FTree.CheckState[Node] := csUncheckedNormal
         else
@@ -90,7 +92,12 @@ begin
   end;
 end;
 
-procedure TTrayMenu.CreateToDoListInPopupMenu(Sender: TBaseVirtualTree;
+procedure TTrayMenu.AddNewToDoItem(Sender: TObject);
+begin
+  frmMain.AddNewToDoItem;
+end;
+
+procedure TTrayMenu.CreateToDoList(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
 var
   PopupMenu : TPopupMenu;
@@ -103,46 +110,27 @@ begin
     NodeData := Sender.GetNodeData(Node);
     if Assigned(NodeData.Data) then
     begin
-      //Create menuitem with ToDo's data
-      MenuItem := TMenuItem.Create(PopupMenu);
-      MenuItem.Caption := NodeData.Data.Text;
+      //Create menuitem with ToDo's data and add it in PopupMenu
+      MenuItem := CreateMenuItem(PopupMenu.Items, NodeData.Data.Text, ToDoMenuItemClick);
       MenuItem.Checked := NodeData.Data.Checked;
       MenuItem.Tag := Node.Index;
-      MenuItem.OnClick := ToDoMenuItemClick;
-      //Add menuitem in popupmenu
-      PopupMenu.Items.Add(MenuItem);
     end;
   end;
 end;
 
-procedure TTrayMenu.CreateMenuSeparator(AParentItem: TMenuItem);
-var
-  MenuItem: TMenuItem;
+function TTrayMenu.CreateMenuItem(AParentItem: TMenuItem; ACaption: string;
+  AOnClick: TNotifyEvent; ADefault: Boolean): TMenuItem;
 begin
-  MenuItem := TMenuItem.Create(AParentItem);
-  MenuItem.Caption := '-';
-  AParentItem.Add(MenuItem);
+  Result := TMenuItem.Create(AParentItem);
+  Result.Caption := ACaption;
+  Result.OnClick := AOnClick;
+  Result.Default := ADefault;
+  AParentItem.Add(Result);
 end;
 
-procedure TTrayMenu.CreateMenuHeader(AParentItem: TMenuItem);
-var
-  MenuItem: TMenuItem;
+procedure TTrayMenu.CreateSeparator(AParentItem: TMenuItem);
 begin
-  MenuItem := TMenuItem.Create(AParentItem);
-  MenuItem.Caption := 'Show MySimpleToDo';
-  MenuItem.OnClick := frmMain.ShowApp;
-  MenuItem.Default := True;
-  AParentItem.Add(MenuItem);
-end;
-
-procedure TTrayMenu.CreateMenuFooter(AParentItem: TMenuItem);
-var
-  MenuItem: TMenuItem;
-begin
-  MenuItem := TMenuItem.Create(AParentItem);
-  MenuItem.Caption := 'Exit';
-  MenuItem.OnClick := frmMain.ExitApp;
-  AParentItem.Add(MenuItem);
+  CreateMenuItem(AParentItem, '-', nil);
 end;
 
 end.
