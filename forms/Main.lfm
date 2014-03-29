@@ -22,6 +22,7 @@ object frmMain: TfrmMain
     DefaultText = 'Node'
     DragMode = dmAutomatic
     DragType = dtVCL
+    EditDelay = 500
     Header.AutoSizeIndex = 0
     Header.Columns = <>
     Header.DefaultHeight = 17
@@ -29,7 +30,7 @@ object frmMain: TfrmMain
     PopupMenu = pmList
     TabOrder = 0
     TreeOptions.AutoOptions = [toAutoDropExpand, toAutoScroll, toAutoScrollOnExpand, toAutoTristateTracking]
-    TreeOptions.MiscOptions = [toCheckSupport, toFullRepaintOnResize, toInitOnSave, toToggleOnDblClick, toWheelPanning, toFullRowDrag, toEditOnClick]
+    TreeOptions.MiscOptions = [toCheckSupport, toEditable, toFullRepaintOnResize, toInitOnSave, toToggleOnDblClick, toWheelPanning, toFullRowDrag, toEditOnClick]
     TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toThemeAware, toUseBlendedImages, toUseBlendedSelection]
     TreeOptions.SelectionOptions = [toFullRowSelect, toMultiSelect, toRightClickSelect]
     OnBeforeCellPaint = vstListBeforeCellPaint
@@ -37,10 +38,13 @@ object frmMain: TfrmMain
     OnDblClick = vstListDblClick
     OnDragOver = vstListDragOver
     OnDragDrop = vstListDragDrop
+    OnEdited = vstListEdited
+    OnEditing = vstListEditing
     OnFreeNode = vstListFreeNode
     OnGetText = vstListGetText
     OnPaintText = vstListPaintText
     OnInitNode = vstListInitNode
+    OnNewText = vstListNewText
   end
   object TrayIcon1: TTrayIcon
     PopUpMenu = pmTrayicon

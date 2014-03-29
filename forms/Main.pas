@@ -58,11 +58,17 @@ type
     procedure vstListDragOver(Sender: TBaseVirtualTree; Source: TObject;
       Shift: TShiftState; State: TDragState; const Pt: TPoint; Mode: TDropMode;
       var Effect: LongWord; var Accept: Boolean);
+    procedure vstListEdited(Sender: TBaseVirtualTree; Node: PVirtualNode;
+      Column: TColumnIndex);
+    procedure vstListEditing(Sender: TBaseVirtualTree; Node: PVirtualNode;
+      Column: TColumnIndex; var Allowed: Boolean);
     procedure vstListFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstListGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType; var CellText: String);
     procedure vstListInitNode(Sender: TBaseVirtualTree; ParentNode,
       Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
+    procedure vstListNewText(Sender: TBaseVirtualTree; Node: PVirtualNode;
+      Column: TColumnIndex; const NewText: String);
     procedure vstListPaintText(Sender: TBaseVirtualTree;
       const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
       TextType: TVSTTextType);
@@ -380,6 +386,18 @@ begin
   Accept := (Sender = Source);
 end;
 
+procedure TfrmMain.vstListEdited(Sender: TBaseVirtualTree; Node: PVirtualNode;
+  Column: TColumnIndex);
+begin
+
+end;
+
+procedure TfrmMain.vstListEditing(Sender: TBaseVirtualTree; Node: PVirtualNode;
+  Column: TColumnIndex; var Allowed: Boolean);
+begin
+
+end;
+
 procedure TfrmMain.vstListFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode
   );
 var
@@ -404,6 +422,16 @@ procedure TfrmMain.vstListInitNode(Sender: TBaseVirtualTree; ParentNode,
   Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
 begin
   Sender.CheckType[Node] := ctCheckBox;
+end;
+
+procedure TfrmMain.vstListNewText(Sender: TBaseVirtualTree; Node: PVirtualNode;
+  Column: TColumnIndex; const NewText: String);
+var
+  NodeData: PTreeNodeData;
+begin
+  NodeData := Sender.GetNodeData(Node);
+  if Assigned(NodeData.Data) and (NewText <> '') then
+    NodeData.Data.Text := NewText;
 end;
 
 procedure TfrmMain.vstListPaintText(Sender: TBaseVirtualTree;
