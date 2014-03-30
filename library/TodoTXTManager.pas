@@ -356,7 +356,7 @@ begin
   if ALine = '' then
     Exit;
   //Add new node and get its data
-  Result   := AddVSTNode(FTree, nil);
+  Result   := AddVSTNode(FTree);
   NodeData := FTree.GetNodeData(Result);
   if Assigned(NodeData) then
   begin

@@ -34,7 +34,7 @@ function StrToDateEx(const str: string): TDate;
 function DateToStrEx(const ADate: TDate): string;
 
 //VirtualTree
-function AddVSTNode(ATree: TBaseVirtualTree; AParentNode: PVirtualNode): PVirtualNode;
+function AddVSTNode(ATree: TBaseVirtualTree; AParentNode: PVirtualNode = nil; AText: string = ''): PVirtualNode;
 function CopyVSTNode(ATree: TBaseVirtualTree; ATargetNode, AOldNode: PVirtualNode;
   AAttachMode: TVTNodeAttachMode): PVirtualNode;
 function ClickOnButtonTree(Sender: TBaseVirtualTree): Boolean;
@@ -58,7 +58,8 @@ var
 begin
   FormatSettings.ShortDateFormat := 'yyyy-mm-dd';
   FormatSettings.DateSeparator   := '-';
-  if Not TryStrToDate(str, Result, FormatSettings) then
+  if (Not TryStrToDate(str, Result, FormatSettings)) or
+      (Length(str) <> Length(FormatSettings.ShortDateFormat)) then
     Result := 0;
 end;
 
@@ -72,14 +73,18 @@ begin
   Result := DateToStr(ADate, FormatSettings);
 end;
 
-function AddVSTNode(ATree: TBaseVirtualTree; AParentNode: PVirtualNode): PVirtualNode;
+function AddVSTNode(ATree: TBaseVirtualTree; AParentNode: PVirtualNode; AText: string): PVirtualNode;
 var
   NodeData: PTreeNodeData;
 begin
   Result   := ATree.AddChild(AParentNode);
+  ATree.ValidateNode(Result, False);
   NodeData := ATree.GetNodeData(Result);
   if Assigned(NodeData) then
+  begin
     NodeData.Data := TBaseNodeData.Create;
+    NodeData.Data.Text := AText;
+  end;
 end;
 
 function CopyVSTNode(ATree: TBaseVirtualTree; ATargetNode, AOldNode: PVirtualNode;

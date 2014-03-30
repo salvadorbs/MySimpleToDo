@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  EditBtn, ButtonPanel, ColorBox, BaseNodeData;
+  EditBtn, ButtonPanel, BaseNodeData;
 
 type
 

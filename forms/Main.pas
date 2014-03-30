@@ -26,13 +26,14 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus,
   StdCtrls, EditBtn, ExtCtrls, Buttons, VirtualTrees, TodoTXTManager,
   {$IFDEF WINDOWS}ActiveX{$ELSE}FakeActiveX{$ENDIF}, filechannel, sharedloggerlcl,
-  UniqueInstance, Clipbrd, ColorUtils, TrayMenu;
+  UniqueInstance, SearchEdit, Clipbrd, ColorUtils, TrayMenu, LCLType;
 
 type
 
   { TfrmMain }
 
   TfrmMain = class(TForm)
+    ilSmallIcons: TImageList;
     mniPaste: TMenuItem;
     mniCopy: TMenuItem;
     mniCut: TMenuItem;
@@ -42,11 +43,17 @@ type
     mniProperties: TMenuItem;
     mniSeparator1: TMenuItem;
     mniAddItem: TMenuItem;
+    pnlTop: TPanel;
     pmList: TPopupMenu;
     pmTrayicon: TPopupMenu;
+    edtSearch: TSearchEdit;
     TrayIcon1: TTrayIcon;
     UniqueInstance1: TUniqueInstance;
     vstList: TVirtualStringTree;
+    procedure edtSearchChange(Sender: TObject);
+    procedure edtSearchKeyPress(Sender: TObject; var Key: char);
+    procedure edtSearchKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
+      );
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
@@ -96,11 +103,13 @@ type
     function ShowProperty(ATree: TBaseVirtualTree; ANode: PVirtualNode): Boolean;
     procedure ShowMainForm(Sender: TObject);
     procedure HideMainForm;
+    procedure FindNodeInTree(Sender: TBaseVirtualTree; Node: PVirtualNode;
+                             Data: Pointer; var Abort: Boolean);
   public
     { public declarations }
     procedure ExitApp(Sender: TObject);
     procedure ShowApp(Sender: TObject);
-    procedure AddNewToDoItem;
+    procedure AddNewToDoItem(AQuickMode: Boolean);
   end;
 
 var
@@ -130,6 +139,38 @@ procedure TfrmMain.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   FToDoManager.Save;
   Log('Closing application', llInfo);
+end;
+
+procedure TfrmMain.edtSearchChange(Sender: TObject);
+begin
+  vstList.BeginUpdate;
+  try
+     vstList.IterateSubtree(nil, FindNodeInTree, PString(edtSearch.Text));
+  finally
+    vstList.EndUpdate;
+  end;
+end;
+
+procedure TfrmMain.edtSearchKeyPress(Sender: TObject; var Key: char);
+begin
+
+end;
+
+procedure TfrmMain.edtSearchKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  Node: PVirtualNode;
+begin
+  if (edtSearch.Text <> '') and (Shift = [ssCtrl]) and (Ord(Key) = VK_RETURN) then
+  begin
+    vstList.BeginUpdate;
+    try
+      Node := AddVSTNode(vstList, nil, edtSearch.Text);
+    finally
+      vstList.EndUpdate;
+    end;
+    Log('Added a ToDo item using search box', llInfo);
+  end;
 end;
 
 procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -180,7 +221,7 @@ end;
 
 procedure TfrmMain.mniAddItemClick(Sender: TObject);
 begin
-  AddNewToDoItem;
+  AddNewToDoItem(False);
 end;
 
 procedure TfrmMain.mniPasteClick(Sender: TObject);
@@ -449,17 +490,21 @@ begin
   end;
 end;
 
-procedure TfrmMain.AddNewToDoItem;
+procedure TfrmMain.AddNewToDoItem(AQuickMode: Boolean);
 var
   Node: PVirtualNode;
 begin
   Log('Added new ToDo Item', llInfo);
   vstList.BeginUpdate;
   try
-    Node := AddVSTNode(vstList, nil);
-    vstList.ValidateNode(Node, False);
-    if not(ShowProperty(vstList, Node)) then
-      vstList.DeleteNode(Node);
+    Node := AddVSTNode(vstList);
+    //Quick mode
+    if AQuickMode then
+      vstList.EditNode(Node, -1)
+    else begin
+      if not(ShowProperty(vstList, Node)) then
+        vstList.DeleteNode(Node);
+    end;
   finally
     vstList.EndUpdate;
   end;
@@ -487,6 +532,19 @@ begin
   ShowInTaskBar := stNever;
 end;
 
+procedure TfrmMain.FindNodeInTree(Sender: TBaseVirtualTree; Node: PVirtualNode;
+  Data: Pointer; var Abort: Boolean);
+var
+  NodeData: PTreeNodeData;
+  KeyWord: string;
+begin
+  Keyword  := string(Data);
+  NodeData := Sender.GetNodeData(Node);
+  if Assigned(NodeData.Data) then
+    Sender.IsVisible[Node] := (pos(UpperCase(Keyword), UpperCase(NodeData.Data.Text)) <> 0) or
+                              (Keyword = '');
+end;
+
 procedure TfrmMain.PasteFromClipboard;
 var
   I: Integer;
@@ -495,12 +553,9 @@ begin
   StringList := TStringList.Create;
   try
     StringList.Text := Clipboard.AsText;
-    if Clipboard.AsText <> '' then
-    begin
-      for I := 0 to StringList.Count - 1 do
-        FToDoManager.StringToNode(StringList[I]);
-      Log(Format('Paste text %s and create a new todo item', [QuotedStr(Clipboard.AsText)]), llInfo);
-    end;
+    for I := 0 to StringList.Count - 1 do
+      FToDoManager.StringToNode(StringList[I]);
+    Log(Format('Paste text %s and create a new todo item', [QuotedStr(Clipboard.AsText)]), llInfo);
   finally
     StringList.Free;
   end;

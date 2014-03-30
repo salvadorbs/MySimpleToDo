@@ -19,7 +19,8 @@ type
     procedure CreateToDoList(Sender: TBaseVirtualTree; Node: PVirtualNode;
                              Data: Pointer; var Abort: Boolean);
     function CreateMenuItem(AParentItem: TMenuItem; ACaption: string;
-                            AOnClick: TNotifyEvent; ADefault: Boolean = False): TMenuItem;
+                            AOnClick: TNotifyEvent; AImageIndex: Integer = -1;
+                            ADefault: Boolean = False): TMenuItem;
     procedure CreateSeparator(AParentItem: TMenuItem);
     //Events
     procedure ToDoMenuItemClick(Sender: TObject);
@@ -54,14 +55,14 @@ begin
   FPopupMenu.Items.Clear;
   //Create TrayMenu's items
   //Header
-  CreateMenuItem(FPopupMenu.Items, 'Show MySimpleToDo', frmMain.ShowApp, True);
+  CreateMenuItem(FPopupMenu.Items, 'Show MySimpleToDo', frmMain.ShowApp, 7, True);
   CreateMenuItem(FPopupMenu.Items, 'Add a new ToDo item', AddNewToDoItem);
   //List
   CreateSeparator(FPopupMenu.Items);
   FTree.IterateSubtree(nil, CreateToDoList, @FPopupMenu);
   CreateSeparator(FPopupMenu.Items);
   //Footer
-  CreateMenuItem(FPopupMenu.Items, 'Exit', frmMain.ExitApp);
+  CreateMenuItem(FPopupMenu.Items, 'Exit', frmMain.ExitApp, 8);
 end;
 
 procedure TTrayMenu.ToDoMenuItemClick(Sender: TObject);
@@ -94,7 +95,7 @@ end;
 
 procedure TTrayMenu.AddNewToDoItem(Sender: TObject);
 begin
-  frmMain.AddNewToDoItem;
+  frmMain.AddNewToDoItem(False);
 end;
 
 procedure TTrayMenu.CreateToDoList(Sender: TBaseVirtualTree;
@@ -119,11 +120,12 @@ begin
 end;
 
 function TTrayMenu.CreateMenuItem(AParentItem: TMenuItem; ACaption: string;
-  AOnClick: TNotifyEvent; ADefault: Boolean): TMenuItem;
+  AOnClick: TNotifyEvent; AImageIndex: Integer; ADefault: Boolean): TMenuItem;
 begin
   Result := TMenuItem.Create(AParentItem);
   Result.Caption := ACaption;
   Result.OnClick := AOnClick;
+  Result.ImageIndex := AImageIndex;
   Result.Default := ADefault;
   AParentItem.Add(Result);
 end;
