@@ -3,13 +3,16 @@ object frmMain: TfrmMain
   Height = 444
   Top = 241
   Width = 222
+  BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'My Simple ToDo'
   ClientHeight = 444
   ClientWidth = 222
+  KeyPreview = True
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnKeyUp = FormKeyUp
   OnWindowStateChange = FormWindowStateChange
   Position = poScreenCenter
   LCLVersion = '1.2.0.3'
@@ -65,7 +68,6 @@ object frmMain: TfrmMain
       BorderSpacing.Around = 3
       Font.Color = clGray
       OnChange = edtSearchChange
-      OnKeyPress = edtSearchKeyPress
       OnKeyUp = edtSearchKeyUp
       ParentFont = False
       TabOrder = 0
@@ -161,7 +163,6 @@ object frmMain: TfrmMain
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
       ImageIndex = 3
-      ShortCut = 16462
       OnClick = mniAddItemClick
     end
     object mniSep2: TMenuItem

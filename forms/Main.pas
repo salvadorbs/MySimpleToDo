@@ -51,13 +51,13 @@ type
     UniqueInstance1: TUniqueInstance;
     vstList: TVirtualStringTree;
     procedure edtSearchChange(Sender: TObject);
-    procedure edtSearchKeyPress(Sender: TObject; var Key: char);
     procedure edtSearchKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
       );
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormWindowStateChange(Sender: TObject);
     procedure mniCopyClick(Sender: TObject);
     procedure mniCutClick(Sender: TObject);
@@ -151,11 +151,6 @@ begin
   end;
 end;
 
-procedure TfrmMain.edtSearchKeyPress(Sender: TObject; var Key: char);
-begin
-
-end;
-
 procedure TfrmMain.edtSearchKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
@@ -185,6 +180,13 @@ procedure TfrmMain.FormDestroy(Sender: TObject);
 begin
   FToDoManager.Free;
   FTrayMenu.Free;
+end;
+
+procedure TfrmMain.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
+  );
+begin
+  if (Shift = [ssCtrl]) and (Ord(Key) = VK_N) then
+    AddNewToDoItem(True);
 end;
 
 procedure TfrmMain.FormWindowStateChange(Sender: TObject);
