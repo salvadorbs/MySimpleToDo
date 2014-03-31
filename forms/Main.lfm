@@ -12,6 +12,7 @@ object frmMain: TfrmMain
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
   OnKeyUp = FormKeyUp
   OnWindowStateChange = FormWindowStateChange
   Position = poScreenCenter

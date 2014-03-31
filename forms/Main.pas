@@ -57,6 +57,7 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormWindowStateChange(Sender: TObject);
     procedure mniCopyClick(Sender: TObject);
@@ -105,6 +106,8 @@ type
     procedure HideMainForm;
     procedure FindNodeInTree(Sender: TBaseVirtualTree; Node: PVirtualNode;
                              Data: Pointer; var Abort: Boolean);
+    procedure MoveItemUp(const ATree: TBaseVirtualTree);
+    procedure MoveItemDown(const ATree: TBaseVirtualTree);
   public
     { public declarations }
     procedure ExitApp(Sender: TObject);
@@ -182,11 +185,22 @@ begin
   FTrayMenu.Free;
 end;
 
+procedure TfrmMain.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Shift = [ssCtrl]) and (Ord(Key) = VK_UP) then
+    MoveItemUp(vstList)
+  else if (Shift = [ssCtrl]) and (Ord(Key) = VK_DOWN) then
+    MoveItemDown(vstList);
+end;
+
 procedure TfrmMain.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
   );
 begin
   if (Shift = [ssCtrl]) and (Ord(Key) = VK_N) then
-    AddNewToDoItem(True);
+    AddNewToDoItem(True)
+  else if (Shift = [ssCtrl]) and (Ord(Key) = VK_F) then
+    edtSearch.SetFocus;
 end;
 
 procedure TfrmMain.FormWindowStateChange(Sender: TObject);
@@ -496,7 +510,10 @@ procedure TfrmMain.AddNewToDoItem(AQuickMode: Boolean);
 var
   Node: PVirtualNode;
 begin
-  Log('Added new ToDo Item', llInfo);
+  if AQuickMode then
+    Log('Added new ToDo Item (quick mode)', llInfo)
+  else
+    Log('Added new ToDo Item', llInfo);
   vstList.BeginUpdate;
   try
     Node := AddVSTNode(vstList);
@@ -545,6 +562,46 @@ begin
   if Assigned(NodeData.Data) then
     Sender.IsVisible[Node] := (pos(UpperCase(Keyword), UpperCase(NodeData.Data.Text)) <> 0) or
                               (Keyword = '');
+end;
+
+procedure TfrmMain.MoveItemUp(const ATree: TBaseVirtualTree);
+var
+  Nodes: TNodeArray;
+  CurrentNode: PVirtualNode;
+  I: Integer;
+begin
+  Nodes := ATree.GetSortedSelection(True);
+  if Length(Nodes) > 0 then
+  begin
+    for I := Low(Nodes) to High(Nodes) do
+    begin
+      CurrentNode := ATree.GetPrevious(Nodes[I]);
+      if Assigned(CurrentNode) then
+        ATree.MoveTo(Nodes[I], CurrentNode, amInsertBefore, False)
+      else
+        ATree.MoveTo(Nodes[I], ATree.GetLast, amInsertAfter, False);
+    end;
+  end;
+end;
+
+procedure TfrmMain.MoveItemDown(const ATree: TBaseVirtualTree);
+var
+  Nodes: TNodeArray;
+  CurrentNode: PVirtualNode;
+  I: Integer;
+begin
+  Nodes := ATree.GetSortedSelection(True);
+  if Length(Nodes) > 0 then
+  begin
+    for I := High(Nodes) downto Low(Nodes) do
+    begin
+      CurrentNode := ATree.GetNext(Nodes[I]);
+      if Assigned(CurrentNode) then
+        ATree.MoveTo(Nodes[I], CurrentNode, amInsertAfter, False)
+      else
+        ATree.MoveTo(Nodes[I], ATree.GetFirst, amInsertBefore, False);
+    end;
+  end;
 end;
 
 procedure TfrmMain.PasteFromClipboard;
