@@ -21,7 +21,7 @@ unit ColorUtils;
 interface
 
 uses
-  Graphics, Classes, StrUtils, SysUtils, LCLIntf;
+  Graphics, Classes, SysUtils, LCLIntf;
 
 type
   TColorArray = array of TColor;

@@ -18,7 +18,7 @@
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
       <MinorVersionNr Value="1"/>
-      <BuildNr Value="17"/>
+      <BuildNr Value="20"/>
       <StringTable ProductVersion=""/>
     </VersionInfo>
     <BuildModes Count="1">
@@ -49,7 +49,7 @@
         <PackageName Value="LCL"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="11">
+    <Units Count="12">
       <Unit0>
         <Filename Value="MySimpleToDo.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -111,6 +111,10 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="Settings"/>
       </Unit10>
+      <Unit11>
+        <Filename Value="MySimpleToDo.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit11>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

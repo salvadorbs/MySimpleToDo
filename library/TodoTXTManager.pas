@@ -312,7 +312,6 @@ end;
 function TToDoTXTManager.LoadColor(ANodeData: TBaseNodeData; const str: string
   ): Boolean;
 var
-  dtDate: TDate;
   StrArray: TStrArray;
 begin
   Result := False;

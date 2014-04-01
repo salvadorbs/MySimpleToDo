@@ -124,6 +124,7 @@ implementation
 uses
   BaseNodeData, PropertyNode, Utility;
 
+{$I MySimpleToDo.inc}
 {$R *.lfm}
 
 { TfrmMain }
@@ -134,6 +135,7 @@ begin
   FTrayMenu := TTrayMenu.Create(pmTrayicon, vstList);
   FSettings := TSettings.Create;
   FSettings.LoadConfig;
+  TrayIcon1.Hint := ApplicationName + ' ' + VERSION;
   TrayIcon1.Visible := FSettings.TrayIcon;
   Logger.Channels.Add(TFileChannel.Create(FSettings.LogFilePath));
   FToDoManager := TToDoTXTManager.Create(FSettings.ToDoFilePath, vstList);
@@ -161,14 +163,12 @@ end;
 
 procedure TfrmMain.edtSearchKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
-var
-  Node: PVirtualNode;
 begin
   if (edtSearch.Text <> '') and (Shift = [ssCtrl]) and (Ord(Key) = VK_RETURN) then
   begin
     vstList.BeginUpdate;
     try
-      Node := AddVSTNode(vstList, nil, edtSearch.Text);
+      AddVSTNode(vstList, nil, edtSearch.Text);
     finally
       vstList.EndUpdate;
     end;
