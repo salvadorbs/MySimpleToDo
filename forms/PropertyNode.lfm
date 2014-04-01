@@ -3,6 +3,7 @@ object frmProperty: TfrmProperty
   Height = 375
   Top = 287
   Width = 442
+  BorderStyle = bsDialog
   Caption = 'Property'
   ClientHeight = 375
   ClientWidth = 442

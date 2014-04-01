@@ -25,8 +25,8 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus,
   StdCtrls, EditBtn, ExtCtrls, Buttons, VirtualTrees, TodoTXTManager,
-  {$IFDEF WINDOWS}ActiveX{$ELSE}FakeActiveX{$ENDIF}, filechannel, sharedloggerlcl,
-  UniqueInstance, SearchEdit, Clipbrd, ColorUtils, TrayMenu, LCLType;
+  {$IFDEF WINDOWS}ActiveX,{$ENDIF} filechannel, sharedloggerlcl, UniqueInstance,
+  SearchEdit, Clipbrd, ColorUtils, TrayMenu, LCLType, Settings;
 
 type
 
@@ -97,6 +97,7 @@ type
   private
     { private declarations }
     FToDoManager: TToDoTXTManager;
+    FSettings: TSettings;
     FTrayMenu: TTrayMenu;
     FShutDownTime: Boolean;
     procedure CopyToClipboard;
@@ -130,9 +131,12 @@ uses
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   FShutDownTime := False;
-  Logger.Channels.Add(TFileChannel.Create(ChangeFileExt(Application.ExeName, '.log')));
   FTrayMenu := TTrayMenu.Create(pmTrayicon, vstList);
-  FToDoManager := TToDoTXTManager.Create('todo.txt', vstList);
+  FSettings := TSettings.Create;
+  FSettings.LoadConfig;
+  TrayIcon1.Visible := FSettings.TrayIcon;
+  Logger.Channels.Add(TFileChannel.Create(FSettings.LogFilePath));
+  FToDoManager := TToDoTXTManager.Create(FSettings.ToDoFilePath, vstList);
   FToDoManager.Load;
   //When user shutdown windows, MySimpletodo call ExitApp
   Application.OnEndSession := ExitApp;
@@ -140,6 +144,7 @@ end;
 
 procedure TfrmMain.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
+  FSettings.SaveConfig;
   FToDoManager.Save;
   Log('Closing application', llInfo);
 end;
@@ -148,7 +153,7 @@ procedure TfrmMain.edtSearchChange(Sender: TObject);
 begin
   vstList.BeginUpdate;
   try
-     vstList.IterateSubtree(nil, FindNodeInTree, PString(edtSearch.Text));
+    vstList.IterateSubtree(nil, FindNodeInTree, PString(edtSearch.Text));
   finally
     vstList.EndUpdate;
   end;
@@ -173,7 +178,7 @@ end;
 
 procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 begin
-  CanClose := FShutDownTime;
+  CanClose := FShutDownTime or not(FSettings.TrayIcon);
   //If user close window, hide form and taskbar icon
   if not (CanClose) then
     HideMainForm;
@@ -182,6 +187,7 @@ end;
 procedure TfrmMain.FormDestroy(Sender: TObject);
 begin
   FToDoManager.Free;
+  FSettings.Free;
   FTrayMenu.Free;
 end;
 
@@ -205,7 +211,7 @@ end;
 
 procedure TfrmMain.FormWindowStateChange(Sender: TObject);
 begin
-  if WindowState = wsMinimized then
+  if (WindowState = wsMinimized) and (FSettings.TrayIcon) then
   begin
     WindowState := wsNormal;
     HideMainForm;
