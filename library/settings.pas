@@ -85,17 +85,16 @@ end;
 
 constructor TSettings.Create;
 begin
+  //Get user directory for MySimpleToDo
+  //Portable
   if FileExists(ApplicationName + '.cfg') then
-  begin
-    FConfigDirPath  := ExtractFilePath(Application.ExeName);
-    FConfigFilePath := FConfigDirPath + ApplicationName + '.cfg';
-  end
-  else begin
+    FConfigDirPath  := ExtractFilePath(Application.ExeName)
+  else begin //Not portable (user directory)
     FConfigDirPath  := GetAppConfigDir(False);
-    FConfigFilePath := GetAppConfigFile(False);
     //Create app directory, if it didn't exists
     ForceDirectories(FConfigDirPath);
   end;
+  FConfigFilePath := FConfigDirPath + ApplicationName + '.cfg';
   FLogFilePath := ChangeFileExt(FConfigFilePath, '.log');
 end;
 

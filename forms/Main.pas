@@ -25,8 +25,8 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus,
   StdCtrls, EditBtn, ExtCtrls, Buttons, VirtualTrees, TodoTXTManager,
-  {$IFDEF WINDOWS}ActiveX,{$ENDIF} filechannel, sharedloggerlcl, UniqueInstance,
-  SearchEdit, Clipbrd, ColorUtils, TrayMenu, LCLType, Settings;
+  {$IFDEF WINDOWS}ActiveX{$ELSE}FakeActiveX{$ENDIF}, filechannel, sharedloggerlcl,
+  UniqueInstance, SearchEdit, Clipbrd, ColorUtils, TrayMenu, LCLType, Settings;
 
 type
 
