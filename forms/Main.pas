@@ -122,9 +122,8 @@ var
 implementation
 
 uses
-  BaseNodeData, PropertyNode, Utility;
+  BaseNodeData, PropertyNode, Utility, About;
 
-{$I MySimpleToDo.inc}
 {$R *.lfm}
 
 { TfrmMain }
@@ -135,13 +134,14 @@ begin
   FTrayMenu := TTrayMenu.Create(pmTrayicon, vstList);
   FSettings := TSettings.Create;
   FSettings.LoadConfig;
-  TrayIcon1.Hint := ApplicationName + ' ' + VERSION;
+  //TrayIcon1.Hint := ApplicationName + ' ' + VERSION;
   TrayIcon1.Visible := FSettings.TrayIcon;
   Logger.Channels.Add(TFileChannel.Create(FSettings.LogFilePath));
   FToDoManager := TToDoTXTManager.Create(FSettings.ToDoFilePath, vstList);
   FToDoManager.Load;
   //When user shutdown windows, MySimpletodo call ExitApp
   Application.OnEndSession := ExitApp;
+  ShowAboutDialog;
 end;
 
 procedure TfrmMain.FormClose(Sender: TObject; var CloseAction: TCloseAction);

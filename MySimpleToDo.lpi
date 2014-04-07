@@ -17,9 +17,9 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
-      <MinorVersionNr Value="1"/>
-      <BuildNr Value="20"/>
-      <StringTable ProductVersion=""/>
+      <MinorVersionNr Value="2"/>
+      <BuildNr Value="30"/>
+      <StringTable Comments="A simple ToDo Manager for you" CompanyName="Matteo Salvi" FileDescription="MySimpleToDo" InternalName="MySimpleToDo" LegalCopyright="(c) 2014 Matteo Salvi" ProductName="MySimpleToDo" ProductVersion="" HomePage="http://www.salvadorsoftware.com/"/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="Debug" Default="True"/>
@@ -32,24 +32,27 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="5">
+    <RequiredPackages Count="6">
       <Item1>
-        <PackageName Value="luicontrols"/>
+        <PackageName Value="RunTimeTypeInfoControls"/>
       </Item1>
       <Item2>
-        <PackageName Value="uniqueinstance_package"/>
+        <PackageName Value="luicontrols"/>
       </Item2>
       <Item3>
-        <PackageName Value="multiloglaz"/>
+        <PackageName Value="uniqueinstance_package"/>
       </Item3>
       <Item4>
-        <PackageName Value="virtualtreeview_package"/>
+        <PackageName Value="multiloglaz"/>
       </Item4>
       <Item5>
-        <PackageName Value="LCL"/>
+        <PackageName Value="virtualtreeview_package"/>
       </Item5>
+      <Item6>
+        <PackageName Value="LCL"/>
+      </Item6>
     </RequiredPackages>
-    <Units Count="12">
+    <Units Count="10">
       <Unit0>
         <Filename Value="MySimpleToDo.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -64,57 +67,51 @@
         <UnitName Value="main"/>
       </Unit1>
       <Unit2>
-        <Filename Value="library\UniParser.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="UniParser"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="library\SubUtils.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="SubUtils"/>
-      </Unit3>
-      <Unit4>
         <Filename Value="library\BaseNodeData.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="BaseNodeData"/>
-      </Unit4>
-      <Unit5>
+      </Unit2>
+      <Unit3>
         <Filename Value="library\Utility.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Utility"/>
-      </Unit5>
-      <Unit6>
+      </Unit3>
+      <Unit4>
         <Filename Value="library\TodoTXTManager.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TodoTXTManager"/>
-      </Unit6>
-      <Unit7>
+      </Unit4>
+      <Unit5>
         <Filename Value="forms\PropertyNode.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmProperty"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="propertynode"/>
-      </Unit7>
-      <Unit8>
+      </Unit5>
+      <Unit6>
         <Filename Value="library\ColorUtils.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ColorUtils"/>
-      </Unit8>
-      <Unit9>
+      </Unit6>
+      <Unit7>
         <Filename Value="library\traymenu.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TrayMenu"/>
-      </Unit9>
-      <Unit10>
+      </Unit7>
+      <Unit8>
         <Filename Value="library\settings.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Settings"/>
-      </Unit10>
-      <Unit11>
-        <Filename Value="MySimpleToDo.inc"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="forms\about.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit11>
+        <ComponentName Value="frmAbout"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="about"/>
+      </Unit9>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -125,7 +122,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="forms;library"/>
+      <OtherUnitFiles Value="forms;library;3p"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>
