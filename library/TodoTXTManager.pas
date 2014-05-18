@@ -23,7 +23,7 @@ unit TodoTXTManager;
 interface
 
 uses
-  Classes, SysUtils, VirtualTrees, BaseNodeData, Graphics, ColorUtils;
+  Classes, SysUtils, VirtualTrees, BaseNodeData, Graphics, ColorUtils, Settings;
 
 type
   { TToDoTXTManager }
@@ -33,6 +33,7 @@ type
   private
     FFileName: string;
     FTree: TBaseVirtualTree;
+    FSettings: TSettings;
     //Save
     function SaveCheckedState(ANodeData: PBaseNodeData): string;
     function SavePriority(ANodeData: PBaseNodeData): string;
@@ -57,11 +58,12 @@ type
 
     procedure ExcludeLastSeparator(var FullString: string);
   public
-    constructor Create(const AFileName: string; ATree: TBaseVirtualTree);
+    constructor Create(const AFileName: string; ATree: TBaseVirtualTree; ASettings: TSettings);
     destructor Destroy; override;
 
     procedure Load;
     procedure Save;
+    procedure SaveAs(AFileName: string);
 
     function NodeToString(const ANode: PVirtualNode): string;
     function StringToNode(const ALine: string): PVirtualNode;
@@ -376,10 +378,11 @@ begin
   end;
 end;
 
-constructor TToDoTXTManager.Create(const AFileName: string; ATree: TBaseVirtualTree);
+constructor TToDoTXTManager.Create(const AFileName: string; ATree: TBaseVirtualTree; ASettings: TSettings);
 begin
   FFileName := AFileName;
   FTree := ATree;
+  FSettings := ASettings;
 end;
 
 destructor TToDoTXTManager.Destroy;
@@ -420,11 +423,19 @@ begin
 end;
 
 procedure TToDoTXTManager.Save;
+begin
+  if FFileName <> '' then
+    Self.SaveAs(FFileName)
+  else
+    Self.SaveAs(FSettings.ConfigDirPath + 'todo.txt');
+end;
+
+procedure TToDoTXTManager.SaveAs(AFileName: string);
 var
   MyFile: TextFile;
   Node: PVirtualNode;
 begin
-  Assign(MyFile, FFileName);
+  Assign(MyFile, AFileName);
   try
     Rewrite(MyFile);
     Node := FTree.GetFirst;

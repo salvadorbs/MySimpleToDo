@@ -34,6 +34,19 @@ type
 
   TfrmMain = class(TForm)
     ilSmallIcons: TImageList;
+    MainMenu1: TMainMenu;
+    mniAbout: TMenuItem;
+    mniExit: TMenuItem;
+    mniSep5: TMenuItem;
+    mniOptions: TMenuItem;
+    mniSep4: TMenuItem;
+    mniExport: TMenuItem;
+    mniImport: TMenuItem;
+    mniSep3: TMenuItem;
+    MenuItem2: TMenuItem;
+    mniLoad: TMenuItem;
+    mniHelp: TMenuItem;
+    mniFile: TMenuItem;
     mniPaste: TMenuItem;
     mniCopy: TMenuItem;
     mniCut: TMenuItem;
@@ -47,6 +60,7 @@ type
     pmList: TPopupMenu;
     pmTrayicon: TPopupMenu;
     edtSearch: TSearchEdit;
+    SaveDialog1: TSaveDialog;
     TrayIcon1: TTrayIcon;
     UniqueInstance1: TUniqueInstance;
     vstList: TVirtualStringTree;
@@ -60,10 +74,13 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormWindowStateChange(Sender: TObject);
+    procedure mniAboutClick(Sender: TObject);
     procedure mniCopyClick(Sender: TObject);
     procedure mniCutClick(Sender: TObject);
     procedure mniDeleteClick(Sender: TObject);
     procedure mniAddItemClick(Sender: TObject);
+    procedure mniExitClick(Sender: TObject);
+    procedure mniExportClick(Sender: TObject);
     procedure mniPasteClick(Sender: TObject);
     procedure mniPropertiesClick(Sender: TObject);
     procedure pmListPopup(Sender: TObject);
@@ -137,11 +154,10 @@ begin
   //TrayIcon1.Hint := ApplicationName + ' ' + VERSION;
   TrayIcon1.Visible := FSettings.TrayIcon;
   Logger.Channels.Add(TFileChannel.Create(FSettings.LogFilePath));
-  FToDoManager := TToDoTXTManager.Create(FSettings.ToDoFilePath, vstList);
+  FToDoManager := TToDoTXTManager.Create(FSettings.ToDoFilePath, vstList, FSettings);
   FToDoManager.Load;
   //When user shutdown windows, MySimpletodo call ExitApp
   Application.OnEndSession := ExitApp;
-  ShowAboutDialog;
 end;
 
 procedure TfrmMain.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -218,6 +234,11 @@ begin
   end;
 end;
 
+procedure TfrmMain.mniAboutClick(Sender: TObject);
+begin
+  ShowAboutDialog;
+end;
+
 procedure TfrmMain.mniCopyClick(Sender: TObject);
 begin
   CopyToClipboard;
@@ -244,6 +265,19 @@ end;
 procedure TfrmMain.mniAddItemClick(Sender: TObject);
 begin
   AddNewToDoItem(False);
+end;
+
+procedure TfrmMain.mniExitClick(Sender: TObject);
+begin
+  FShutDownTime := True;
+  Close;
+end;
+
+procedure TfrmMain.mniExportClick(Sender: TObject);
+begin
+  SaveDialog1.InitialDir := GetUserDir;
+  if SaveDialog1.Execute then
+    FToDoManager.SaveAs(SaveDialog1.FileName);
 end;
 
 procedure TfrmMain.mniPasteClick(Sender: TObject);

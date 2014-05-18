@@ -1,13 +1,14 @@
 object frmMain: TfrmMain
-  Left = 651
+  Left = 648
   Height = 444
-  Top = 241
+  Top = 243
   Width = 222
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'My Simple ToDo'
   ClientHeight = 444
   ClientWidth = 222
   KeyPreview = True
+  Menu = MainMenu1
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
@@ -16,7 +17,7 @@ object frmMain: TfrmMain
   OnKeyUp = FormKeyUp
   OnWindowStateChange = FormWindowStateChange
   Position = poScreenCenter
-  LCLVersion = '1.2.0.3'
+  LCLVersion = '1.2.2.0'
   object vstList: TVirtualStringTree
     Left = 0
     Height = 416
@@ -395,6 +396,9 @@ object frmMain: TfrmMain
     OnPopup = pmTrayiconPopup
     left = 88
     top = 48
+    object MenuItem2: TMenuItem
+      Caption = 'New Item1'
+    end
   end
   object ilSmallIcons: TImageList
     left = 88
@@ -690,5 +694,51 @@ object frmMain: TfrmMain
       FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
       FF00FFFFFF00FFFFFF00FFFFFF00
     }
+  end
+  object MainMenu1: TMainMenu
+    left = 162
+    top = 48
+    object mniFile: TMenuItem
+      Caption = 'File'
+      object mniLoad: TMenuItem
+        Caption = 'Load todo.txt file'
+      end
+      object mniSep4: TMenuItem
+        Caption = '-'
+      end
+      object mniOptions: TMenuItem
+        Caption = 'Options'
+      end
+      object mniSep3: TMenuItem
+        Caption = '-'
+      end
+      object mniImport: TMenuItem
+        Caption = 'Import'
+      end
+      object mniExport: TMenuItem
+        Caption = 'Export'
+        OnClick = mniExportClick
+      end
+      object mniSep5: TMenuItem
+        Caption = '-'
+      end
+      object mniExit: TMenuItem
+        Caption = 'Exit'
+        OnClick = mniExitClick
+      end
+    end
+    object mniHelp: TMenuItem
+      Caption = 'Help'
+      object mniAbout: TMenuItem
+        Caption = 'About'
+        OnClick = mniAboutClick
+      end
+    end
+  end
+  object SaveDialog1: TSaveDialog
+    Filter = 'ToDo Text Files (*.txt)|*.txt|Any file (*.*)|*.*'
+    Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
+    left = 162
+    top = 96
   end
 end

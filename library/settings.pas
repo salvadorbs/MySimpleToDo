@@ -90,11 +90,11 @@ begin
   if FileExists(ApplicationName + '.cfg') then
     FConfigDirPath  := ExtractFilePath(Application.ExeName)
   else begin //Not portable (user directory)
-    FConfigDirPath  := GetAppConfigDir(False);
+    FConfigDirPath  := LowerCase(GetAppConfigDir(False));
     //Create app directory, if it didn't exists
     ForceDirectories(FConfigDirPath);
   end;
-  FConfigFilePath := FConfigDirPath + ApplicationName + '.cfg';
+  FConfigFilePath := FConfigDirPath + LowerCase(ApplicationName) + '.cfg';
   FLogFilePath := ChangeFileExt(FConfigFilePath, '.log');
 end;
 
