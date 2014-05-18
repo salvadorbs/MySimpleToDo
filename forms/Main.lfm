@@ -117,13 +117,13 @@ object frmMain: TfrmMain
     }
     Visible = True
     OnDblClick = TrayIcon1DblClick
-    left = 88
+    left = 56
     top = 152
   end
   object pmList: TPopupMenu
     Images = ilSmallIcons
     OnPopup = pmListPopup
-    left = 88
+    left = 56
     top = 96
     object mniAddItem: TMenuItem
       Caption = 'Add new todo'
@@ -387,12 +387,12 @@ object frmMain: TfrmMain
     Enabled = True
     Identifier = 'MySimpleToDo'
     OnOtherInstance = UniqueInstance1OtherInstance
-    left = 88
-    top = 208
+    left = 128
+    top = 152
   end
   object ilSmallIcons: TImageList
-    left = 88
-    top = 264
+    left = 56
+    top = 208
     Bitmap = {
       4C69090000001000000010000000FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
       FF04FFFFFF17FFFFFF25FFFFFF26FFFFFF26FFFFFF26FFFFFF26FFFFFF26FFFF
@@ -686,12 +686,17 @@ object frmMain: TfrmMain
     }
   end
   object MainMenu1: TMainMenu
-    left = 162
-    top = 48
+    left = 128
+    top = 96
     object mniFile: TMenuItem
       Caption = 'File'
+      object mniNew: TMenuItem
+        Caption = 'New todo.txt file'
+        OnClick = mniNewClick
+      end
       object mniLoad: TMenuItem
         Caption = 'Load todo.txt file'
+        OnClick = mniLoadClick
       end
       object mniSep4: TMenuItem
         Caption = '-'
@@ -704,6 +709,7 @@ object frmMain: TfrmMain
       end
       object mniImport: TMenuItem
         Caption = 'Import'
+        OnClick = mniImportClick
       end
       object mniExport: TMenuItem
         Caption = 'Export'
@@ -728,7 +734,12 @@ object frmMain: TfrmMain
   object SaveDialog1: TSaveDialog
     Filter = 'ToDo Text Files (*.txt)|*.txt|Any file (*.*)|*.*'
     Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
-    left = 162
-    top = 96
+    left = 128
+    top = 40
+  end
+  object OpenDialog1: TOpenDialog
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    left = 56
+    top = 40
   end
 end

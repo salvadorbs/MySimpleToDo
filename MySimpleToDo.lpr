@@ -7,7 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, runtimetypeinfocontrols, Main, PropertyNode, BaseNodeData, Utility,
+  Forms, Main, PropertyNode, BaseNodeData, Utility,
   TodoTXTManager, ColorUtils, virtualtreeview_package,
   multiloglaz, uniqueinstance_package, luicontrols, TrayMenu, Settings,
   About;

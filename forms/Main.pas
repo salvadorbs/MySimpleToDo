@@ -35,6 +35,7 @@ type
   TfrmMain = class(TForm)
     ilSmallIcons: TImageList;
     MainMenu1: TMainMenu;
+    mniNew: TMenuItem;
     mniAbout: TMenuItem;
     mniExit: TMenuItem;
     mniSep5: TMenuItem;
@@ -55,6 +56,7 @@ type
     mniProperties: TMenuItem;
     mniSeparator1: TMenuItem;
     mniAddItem: TMenuItem;
+    OpenDialog1: TOpenDialog;
     pnlTop: TPanel;
     pmList: TPopupMenu;
     edtSearch: TSearchEdit;
@@ -79,6 +81,9 @@ type
     procedure mniAddItemClick(Sender: TObject);
     procedure mniExitClick(Sender: TObject);
     procedure mniExportClick(Sender: TObject);
+    procedure mniImportClick(Sender: TObject);
+    procedure mniLoadClick(Sender: TObject);
+    procedure mniNewClick(Sender: TObject);
     procedure mniPasteClick(Sender: TObject);
     procedure mniPropertiesClick(Sender: TObject);
     procedure pmListPopup(Sender: TObject);
@@ -123,6 +128,7 @@ type
                              Data: Pointer; var Abort: Boolean);
     procedure MoveItemUp(const ATree: TBaseVirtualTree);
     procedure MoveItemDown(const ATree: TBaseVirtualTree);
+    procedure CloseCurrentToDoFile;
   public
     { public declarations }
     procedure ExitApp(Sender: TObject);
@@ -146,21 +152,25 @@ procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   FShutDownTime := False;
   FTrayMenu := TTrayMenu.Create(vstList);
+  //Settings and logger
   FSettings := TSettings.Create;
   FSettings.LoadConfig;
   //TrayIcon1.Hint := ApplicationName + ' ' + VERSION;
-  TrayIcon1.Visible := FSettings.TrayIcon;
   Logger.Channels.Add(TFileChannel.Create(FSettings.LogFilePath));
-  FToDoManager := TToDoTXTManager.Create(FSettings.ToDoFilePath, vstList, FSettings);
-  FToDoManager.Load;
-  //When user shutdown windows, MySimpletodo call ExitApp
+  //Load todo.txt
+  FToDoManager := TToDoTXTManager.Create(vstList);
+  FToDoManager.Load(FSettings.LastToDoFileName);
+  //When user shutdown operating system, MySimpletodo call ExitApp
   Application.OnEndSession := ExitApp;
+  //Set initial dir for open/save dialogs
+  OpenDialog1.InitialDir := FSettings.ConfigDirPath;
+  SaveDialog1.InitialDir := FSettings.ConfigDirPath;
 end;
 
 procedure TfrmMain.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   FSettings.SaveConfig;
-  FToDoManager.Save;
+  CloseCurrentToDoFile;
   Log('Closing application', llInfo);
 end;
 
@@ -272,9 +282,38 @@ end;
 
 procedure TfrmMain.mniExportClick(Sender: TObject);
 begin
-  SaveDialog1.InitialDir := GetUserDir;
+  SaveDialog1.Title := 'Export ToDos in another *.txt';
   if SaveDialog1.Execute then
     FToDoManager.SaveAs(SaveDialog1.FileName);
+end;
+
+procedure TfrmMain.mniImportClick(Sender: TObject);
+begin
+  OpenDialog1.Title := 'Import ToDos from a *.txt file';
+  if OpenDialog1.Execute then
+    FToDoManager.Load(OpenDialog1.FileName);
+end;
+
+procedure TfrmMain.mniLoadClick(Sender: TObject);
+begin
+  OpenDialog1.Title := 'Load another *.txt file';
+  if OpenDialog1.Execute then
+  begin
+    CloseCurrentToDoFile;
+    FSettings.LastToDoFileName := OpenDialog1.FileName;
+    FToDoManager.Load(OpenDialog1.FileName);
+  end;
+end;
+
+procedure TfrmMain.mniNewClick(Sender: TObject);
+begin
+  SaveDialog1.Title := 'Create a new *.txt file';
+  if SaveDialog1.Execute then
+  begin
+    CloseCurrentToDoFile;
+    FSettings.LastToDoFileName := SaveDialog1.FileName;
+    Log('Create new ToDo.txt ' + SaveDialog1.FileName, llInfo);
+  end;
 end;
 
 procedure TfrmMain.mniPasteClick(Sender: TObject);
@@ -634,6 +673,13 @@ begin
         ATree.MoveTo(Nodes[I], ATree.GetFirst, amInsertBefore, False);
     end;
   end;
+end;
+
+procedure TfrmMain.CloseCurrentToDoFile;
+begin
+  Log('Closing actual ToDo.txt', llInfo);
+  FToDoManager.SaveAs(FSettings.LastToDoFileName);
+  vstList.Clear;
 end;
 
 procedure TfrmMain.PasteFromClipboard;

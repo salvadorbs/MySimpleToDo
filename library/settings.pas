@@ -34,11 +34,13 @@ type
     FLogFilePath: string;
     FConfigFilePath: string;
     FConfigDirPath: string;
-    FToDoFilePath: string;
+    FLastToDoFileName: string;
     FTrayicon: Boolean;
 
+    function GetLastToDoFileName: string;
     procedure SaveFormProps(var IniFile: TIniFile; AForm: TForm);
     procedure LoadFormProps(var IniFile: TIniFile; AForm: TForm);
+    procedure SetTrayicon(AValue: Boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -49,8 +51,8 @@ type
     property LogFilePath: string read FLogFilePath;
     property ConfigFilePath: string read FConfigFilePath;
     property ConfigDirPath: string read FConfigDirPath;
-    property ToDoFilePath: string read FToDoFilePath;
-    property TrayIcon: Boolean read FTrayicon write FTrayicon;
+    property LastToDoFileName: string read GetLastToDoFileName write FLastToDoFileName;
+    property TrayIcon: Boolean read FTrayicon write SetTrayicon;
   end;
 
 implementation
@@ -71,6 +73,14 @@ begin
   end;
 end;
 
+function TSettings.GetLastToDoFileName: string;
+begin
+  if FLastToDoFileName <> '' then
+    Result := FLastToDoFileName
+  else
+    Result := FConfigDirPath + 'todo.txt'
+end;
+
 procedure TSettings.LoadFormProps(var IniFile: TIniFile; AForm: TForm);
 begin
   if Assigned(AForm) then
@@ -81,6 +91,13 @@ begin
     AForm.Height := IniFile.ReadInteger(AForm.Name, 'Height', AForm.Height);
     AForm.Width  := IniFile.ReadInteger(AForm.Name, 'Width', AForm.Width);
   end;
+end;
+
+procedure TSettings.SetTrayicon(AValue: Boolean);
+begin
+  if FTrayicon = AValue then Exit;
+  FTrayicon := AValue;
+  frmMain.TrayIcon1.Visible := FTrayIcon;
 end;
 
 constructor TSettings.Create;
@@ -112,7 +129,7 @@ begin
   IniFile := TIniFile.Create(FConfigFilePath);
   try
     SaveFormProps(IniFile, frmMain);
-    IniFile.WriteString('General', 'FileToDo', FToDoFilePath);
+    IniFile.WriteString('General', 'FileToDo', FLastToDoFileName);
   finally
     IniFile.Free;
   end;
@@ -127,7 +144,7 @@ begin
     IniFile := TIniFile.Create(FConfigFilePath);
     try
       LoadFormProps(IniFile, frmMain);
-      FToDoFilePath := IniFile.ReadString('General', 'FileToDo', FConfigDirPath + 'todo.txt');
+      FLastToDoFileName := IniFile.ReadString('General', 'FileToDo', FConfigDirPath + 'todo.txt');
       FTrayicon := IniFile.ReadBool('General', 'Trayicon', True);
     finally
       IniFile.Free;

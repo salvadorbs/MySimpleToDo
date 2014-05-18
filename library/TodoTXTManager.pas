@@ -31,9 +31,7 @@ type
 
   TToDoTXTManager = class
   private
-    FFileName: string;
     FTree: TBaseVirtualTree;
-    FSettings: TSettings;
     //Save
     function SaveCheckedState(ANodeData: PBaseNodeData): string;
     function SavePriority(ANodeData: PBaseNodeData): string;
@@ -58,17 +56,14 @@ type
 
     procedure ExcludeLastSeparator(var FullString: string);
   public
-    constructor Create(const AFileName: string; ATree: TBaseVirtualTree; ASettings: TSettings);
+    constructor Create(ATree: TBaseVirtualTree);
     destructor Destroy; override;
 
-    procedure Load;
-    procedure Save;
-    procedure SaveAs(AFileName: string);
+    procedure Load(const AFileName: string);
+    procedure SaveAs(const AFileName: string);
 
     function NodeToString(const ANode: PVirtualNode): string;
     function StringToNode(const ALine: string): PVirtualNode;
-
-    property FileName: string read FFileName write FFileName;
   end;
 
 const
@@ -378,31 +373,28 @@ begin
   end;
 end;
 
-constructor TToDoTXTManager.Create(const AFileName: string; ATree: TBaseVirtualTree; ASettings: TSettings);
+constructor TToDoTXTManager.Create(ATree: TBaseVirtualTree);
 begin
-  FFileName := AFileName;
   FTree := ATree;
-  FSettings := ASettings;
 end;
 
 destructor TToDoTXTManager.Destroy;
 begin
-  FFileName := '';
   inherited Destroy;
 end;
 
-procedure TToDoTXTManager.Load;
+procedure TToDoTXTManager.Load(const AFileName: string);
 var
   MyFile: TextFile;
   str: string;
 begin
   Assert(Assigned(FTree), 'FTree is not assigned!');
 
-  if FileExists(FFileName) then
+  if FileExists(AFileName) then
   begin
-    Log('Loading file ' + Self.FileName + ' in progress', llInfo);
+    Log('Loading file ' + AFileName + ' in progress', llInfo);
     //Load FFileName
-    Assign(MyFile, FFileName);
+    Assign(MyFile, AFileName);
     try
       Reset(MyFile);
       //Read FFileName and load ToDo
@@ -413,24 +405,16 @@ begin
         if Assigned(StringToNode(str)) then
           Log('Loaded line in todo.txt format = ' + QuotedStr(str), llInfo);
       end;
-      Log('Loading file ' + Self.FileName + ' completed', llInfo);
+      Log('Loading file ' + AFileName + ' completed', llInfo);
     finally
       CloseFile(MyFile);
     end;
   end
   else
-    Log('file ' + Self.FileName + 'don''t found', llInfo);
+    Log('File ' + AFileName + 'don''t found', llInfo);
 end;
 
-procedure TToDoTXTManager.Save;
-begin
-  if FFileName <> '' then
-    Self.SaveAs(FFileName)
-  else
-    Self.SaveAs(FSettings.ConfigDirPath + 'todo.txt');
-end;
-
-procedure TToDoTXTManager.SaveAs(AFileName: string);
+procedure TToDoTXTManager.SaveAs(const AFileName: string);
 var
   MyFile: TextFile;
   Node: PVirtualNode;
@@ -447,7 +431,7 @@ begin
       Node := FTree.GetNext(Node);
     end;
   finally
-    Log('ToDo list saved in ' + FileName, llInfo);
+    Log('ToDo list saved in ' + AFileName, llInfo);
     CloseFile(MyFile);
   end;
 end;
