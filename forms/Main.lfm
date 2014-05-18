@@ -5,7 +5,7 @@ object frmMain: TfrmMain
   Width = 222
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'My Simple ToDo'
-  ClientHeight = 444
+  ClientHeight = 424
   ClientWidth = 222
   KeyPreview = True
   Menu = MainMenu1
@@ -17,10 +17,10 @@ object frmMain: TfrmMain
   OnKeyUp = FormKeyUp
   OnWindowStateChange = FormWindowStateChange
   Position = poScreenCenter
-  LCLVersion = '1.2.2.0'
+  LCLVersion = '1.2.0.3'
   object vstList: TVirtualStringTree
     Left = 0
-    Height = 416
+    Height = 396
     Top = 28
     Width = 222
     Align = alClient
@@ -76,7 +76,6 @@ object frmMain: TfrmMain
     end
   end
   object TrayIcon1: TTrayIcon
-    PopUpMenu = pmTrayicon
     Icon.Data = {
       7E04000000000100010010100000010020006804000016000000280000001000
       0000200000000100200000000000000400006400000064000000000000000000
@@ -390,15 +389,6 @@ object frmMain: TfrmMain
     OnOtherInstance = UniqueInstance1OtherInstance
     left = 88
     top = 208
-  end
-  object pmTrayicon: TPopupMenu
-    Images = ilSmallIcons
-    OnPopup = pmTrayiconPopup
-    left = 88
-    top = 48
-    object MenuItem2: TMenuItem
-      Caption = 'New Item1'
-    end
   end
   object ilSmallIcons: TImageList
     left = 88

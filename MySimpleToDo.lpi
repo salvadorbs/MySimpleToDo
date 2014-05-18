@@ -18,7 +18,7 @@
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
       <MinorVersionNr Value="2"/>
-      <BuildNr Value="34"/>
+      <BuildNr Value="46"/>
       <StringTable Comments="A simple ToDo Manager for you" CompanyName="Matteo Salvi" FileDescription="MySimpleToDo" InternalName="MySimpleToDo" LegalCopyright="(c) 2014 Matteo Salvi" ProductName="MySimpleToDo" ProductVersion="" HomePage="http://www.salvadorsoftware.com/"/>
     </VersionInfo>
     <BuildModes Count="1">
@@ -32,25 +32,22 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="6">
+    <RequiredPackages Count="5">
       <Item1>
-        <PackageName Value="RunTimeTypeInfoControls"/>
+        <PackageName Value="luicontrols"/>
       </Item1>
       <Item2>
-        <PackageName Value="luicontrols"/>
+        <PackageName Value="uniqueinstance_package"/>
       </Item2>
       <Item3>
-        <PackageName Value="uniqueinstance_package"/>
+        <PackageName Value="multiloglaz"/>
       </Item3>
       <Item4>
-        <PackageName Value="multiloglaz"/>
+        <PackageName Value="virtualtreeview_package"/>
       </Item4>
       <Item5>
-        <PackageName Value="virtualtreeview_package"/>
-      </Item5>
-      <Item6>
         <PackageName Value="LCL"/>
-      </Item6>
+      </Item5>
     </RequiredPackages>
     <Units Count="10">
       <Unit0>

@@ -43,7 +43,6 @@ type
     mniExport: TMenuItem;
     mniImport: TMenuItem;
     mniSep3: TMenuItem;
-    MenuItem2: TMenuItem;
     mniLoad: TMenuItem;
     mniHelp: TMenuItem;
     mniFile: TMenuItem;
@@ -58,7 +57,6 @@ type
     mniAddItem: TMenuItem;
     pnlTop: TPanel;
     pmList: TPopupMenu;
-    pmTrayicon: TPopupMenu;
     edtSearch: TSearchEdit;
     SaveDialog1: TSaveDialog;
     TrayIcon1: TTrayIcon;
@@ -84,7 +82,6 @@ type
     procedure mniPasteClick(Sender: TObject);
     procedure mniPropertiesClick(Sender: TObject);
     procedure pmListPopup(Sender: TObject);
-    procedure pmTrayiconPopup(Sender: TObject);
     procedure TrayIcon1DblClick(Sender: TObject);
     procedure UniqueInstance1OtherInstance(Sender: TObject;
       ParamCount: Integer; Parameters: array of String);
@@ -148,7 +145,7 @@ uses
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   FShutDownTime := False;
-  FTrayMenu := TTrayMenu.Create(pmTrayicon, vstList);
+  FTrayMenu := TTrayMenu.Create(vstList);
   FSettings := TSettings.Create;
   FSettings.LoadConfig;
   //TrayIcon1.Hint := ApplicationName + ' ' + VERSION;
@@ -297,11 +294,6 @@ begin
   mniCopy.Enabled  := (vstList.SelectedCount > 0);
   mniPaste.Enabled := (Clipboard.AsText <> '');
   mniProperties.Enabled := (vstList.SelectedCount > 0);
-end;
-
-procedure TfrmMain.pmTrayiconPopup(Sender: TObject);
-begin
-  FTrayMenu.Populate;
 end;
 
 procedure TfrmMain.ShowMainForm(Sender: TObject);

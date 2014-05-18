@@ -11,8 +11,8 @@ __history
 
 #Custom - Lazarus
 *.dbg
-bin/todo.txt
+*.bak
 *.lps
 lib/*
 backup/*
-*.bak
+bin/*

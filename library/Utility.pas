@@ -23,7 +23,7 @@ unit Utility;
 interface
 
 uses
-  Classes, SysUtils, Forms, BaseNodeData, sharedloggerlcl,
+  Classes, SysUtils, Forms, BaseNodeData, sharedloggerlcl, DateUtils,
   {$IFDEF WINDOWS}Windows, {$ELSE UNIX} LCLIntf, LCLType, LMessages,{$ENDIF} VirtualTrees;
 
 type
@@ -38,6 +38,11 @@ function AddVSTNode(ATree: TBaseVirtualTree; AParentNode: PVirtualNode = nil; AT
 function CopyVSTNode(ATree: TBaseVirtualTree; ATargetNode, AOldNode: PVirtualNode;
   AAttachMode: TVTNodeAttachMode): PVirtualNode;
 function ClickOnButtonTree(Sender: TBaseVirtualTree): Boolean;
+
+//Compare functions for VST
+function CompareDeadLineDate(ANodeData1, ANodeData2: TBaseNodeData): Integer;
+function CompareText(ANodeData1, ANodeData2: TBaseNodeData): Integer;
+function ComparePriority(ANodeData1, ANodeData2: TBaseNodeData): Integer;
 
 //Misc
 procedure SetVistaFonts(const AForm: TCustomForm);
@@ -114,6 +119,26 @@ begin
   Point    := Sender.ScreenToClient(Point);
   Sender.GetHitTestInfoAt(Point.X, Point.Y, True, HitInfo);
     Result := hiOnItemButton in hitinfo.HitPositions;
+end;
+
+function CompareDeadLineDate(ANodeData1, ANodeData2: TBaseNodeData): Integer;
+begin
+  Result := CompareDate(ANodeData1.DateDeadLine, ANodeData2.DateDeadLine);
+end;
+
+function CompareText(ANodeData1, ANodeData2: TBaseNodeData): Integer;
+begin
+  Result := SysUtils.CompareText(ANodeData1.Text, ANodeData2.Text);
+end;
+
+function ComparePriority(ANodeData1, ANodeData2: TBaseNodeData): Integer;
+begin
+  if (ANodeData1.Priority <> '') or (ANodeData2.Priority <> '') then
+  begin
+    Result := SysUtils.CompareText(ANodeData2.Priority, ANodeData1.Priority);
+  end
+  else
+    Result := SysUtils.CompareText(ANodeData1.Text, ANodeData2.Text);
 end;
 
 procedure SetVistaFonts(const AForm: TCustomForm);

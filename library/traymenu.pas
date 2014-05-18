@@ -25,11 +25,13 @@ type
     //Events
     procedure ToDoMenuItemClick(Sender: TObject);
     procedure AddNewToDoItem(Sender: TObject);
+
+    procedure Populate(Sender: TObject);
   public
-    constructor Create(APopupMenu: TPopupMenu; ATree: TBaseVirtualTree);
+    constructor Create(ATree: TBaseVirtualTree);
     destructor Destroy; override;
 
-    procedure Populate;
+    property PopupMenu: TPopupMenu read FPopupMenu;
   end;
 
 implementation
@@ -39,18 +41,20 @@ uses
 
 { TTrayMenu }
 
-constructor TTrayMenu.Create(APopupMenu: TPopupMenu; ATree: TBaseVirtualTree);
+constructor TTrayMenu.Create(ATree: TBaseVirtualTree);
 begin
-  FPopupMenu := APopupMenu;
+  FPopupMenu := TPopupMenu.Create(nil);
+  FPopupMenu.OnPopup := Populate;
   FTree := ATree;
 end;
 
 destructor TTrayMenu.Destroy;
 begin
+  FPopupMenu.Free;
   inherited Destroy;
 end;
 
-procedure TTrayMenu.Populate;
+procedure TTrayMenu.Populate(Sender: TObject);
 begin
   FPopupMenu.Items.Clear;
   //Create TrayMenu's items
