@@ -118,7 +118,7 @@ begin
   GetCursorPos(Point);
   Point    := Sender.ScreenToClient(Point);
   Sender.GetHitTestInfoAt(Point.X, Point.Y, True, HitInfo);
-    Result := hiOnItemButton in hitinfo.HitPositions;
+    Result := hiOnItemButton in HitInfo.HitPositions;
 end;
 
 function CompareDeadLineDate(ANodeData1, ANodeData2: TBaseNodeData): Integer;
@@ -133,12 +133,14 @@ end;
 
 function ComparePriority(ANodeData1, ANodeData2: TBaseNodeData): Integer;
 begin
-  if (ANodeData1.Priority <> '') or (ANodeData2.Priority <> '') then
-  begin
-    Result := SysUtils.CompareText(ANodeData2.Priority, ANodeData1.Priority);
-  end
-  else
-    Result := SysUtils.CompareText(ANodeData1.Text, ANodeData2.Text);
+  if (ANodeData1.Priority <> '') and (ANodeData2.Priority <> '') then
+    Result := SysUtils.CompareText(ANodeData1.Priority, ANodeData2.Priority)
+  else begin
+    if (ANodeData1.Priority = '') then
+      Result := 1;
+    if (ANodeData2.Priority = '') then
+      Result := -1;
+  end;
 end;
 
 procedure SetVistaFonts(const AForm: TCustomForm);

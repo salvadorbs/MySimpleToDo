@@ -30,11 +30,24 @@ uses
 
 type
 
+  TSortType = (stDeadLineDate, stPriority, stText);
+
   { TfrmMain }
 
   TfrmMain = class(TForm)
     ilSmallIcons: TImageList;
     MainMenu1: TMainMenu;
+    mniCopy2: TMenuItem;
+    mniCut2: TMenuItem;
+    mniDelete2: TMenuItem;
+    mniPaste2: TMenuItem;
+    mniSep6: TMenuItem;
+    mniText: TMenuItem;
+    mniArchiveToDos: TMenuItem;
+    mniDeadline: TMenuItem;
+    mniPriority: TMenuItem;
+    mniEdit: TMenuItem;
+    mniSort: TMenuItem;
     mniNew: TMenuItem;
     mniAbout: TMenuItem;
     mniExit: TMenuItem;
@@ -74,6 +87,7 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormWindowStateChange(Sender: TObject);
+    procedure mniSortClick(Sender: TObject);
     procedure mniAboutClick(Sender: TObject);
     procedure mniCopyClick(Sender: TObject);
     procedure mniCutClick(Sender: TObject);
@@ -94,6 +108,8 @@ type
       TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
       CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
     procedure vstListChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
+    procedure vstListCompareNodes(Sender: TBaseVirtualTree; Node1,
+      Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstListDblClick(Sender: TObject);
     procedure vstListDragDrop(Sender: TBaseVirtualTree; Source: TObject;
       DataObject: IDataObject; Formats: TFormatArray; Shift: TShiftState;
@@ -119,6 +135,7 @@ type
     FSettings: TSettings;
     FTrayMenu: TTrayMenu;
     FShutDownTime: Boolean;
+    FSortType: TSortType;
     procedure CopyToClipboard;
     procedure PasteFromClipboard;
     function ShowProperty(ATree: TBaseVirtualTree; ANode: PVirtualNode): Boolean;
@@ -150,8 +167,10 @@ uses
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
+  FSortType := stText;
   FShutDownTime := False;
-  FTrayMenu := TTrayMenu.Create(vstList);
+  FTrayMenu := TTrayMenu.Create(vstList, ilSmallIcons);
+  TrayIcon1.PopUpMenu := FTrayMenu.PopupMenu;
   //Settings and logger
   FSettings := TSettings.Create;
   FSettings.LoadConfig;
@@ -239,6 +258,13 @@ begin
     WindowState := wsNormal;
     HideMainForm;
   end;
+end;
+
+procedure TfrmMain.mniSortClick(Sender: TObject);
+begin
+  if Sender is TMenuItem then
+    FSortType := TSortType(TMenuItem(Sender).Tag);
+  vstList.SortTree(0, sdAscending);
 end;
 
 procedure TfrmMain.mniAboutClick(Sender: TObject);
@@ -378,6 +404,24 @@ begin
       Log(Format('Check item %s to %s', [NodeData.Data.Text, BoolToStr(NodeData.Data.Checked)]),
           llInfo);
     end;
+end;
+
+procedure TfrmMain.vstListCompareNodes(Sender: TBaseVirtualTree; Node1,
+  Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
+var
+  NodeData1, NodeData2: TBaseNodeData;
+begin
+  NodeData1 := PTreeNodeData(Sender.GetNodeData(Node1)).Data;
+  NodeData2 := PTreeNodeData(Sender.GetNodeData(Node2)).Data;
+  if (Not Assigned(NodeData1)) or (Not Assigned(NodeData2)) then
+    Result := 0
+  else begin
+    case FSortType of
+      stDeadLineDate: Result := CompareDeadLineDate(NodeData1, NodeData2);
+      stText:         Result := CompareText(NodeData1, NodeData2);
+      stPriority:     Result := ComparePriority(NodeData1, NodeData2);
+    end;
+  end;
 end;
 
 procedure TfrmMain.vstListDblClick(Sender: TObject);

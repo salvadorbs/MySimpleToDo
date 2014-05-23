@@ -5,7 +5,7 @@ unit TrayMenu;
 interface
 
 uses
-  Classes, SysUtils, Menus, VirtualTrees, BaseNodeData;
+  Classes, SysUtils, Menus, VirtualTrees, BaseNodeData, Controls;
 
 type
 
@@ -28,7 +28,7 @@ type
 
     procedure Populate(Sender: TObject);
   public
-    constructor Create(ATree: TBaseVirtualTree);
+    constructor Create(ATree: TBaseVirtualTree; AImageList: TImageList);
     destructor Destroy; override;
 
     property PopupMenu: TPopupMenu read FPopupMenu;
@@ -41,9 +41,10 @@ uses
 
 { TTrayMenu }
 
-constructor TTrayMenu.Create(ATree: TBaseVirtualTree);
+constructor TTrayMenu.Create(ATree: TBaseVirtualTree; AImageList: TImageList);
 begin
   FPopupMenu := TPopupMenu.Create(nil);
+  FPopupMenu.Images  := AImageList;
   FPopupMenu.OnPopup := Populate;
   FTree := ATree;
 end;
@@ -60,7 +61,7 @@ begin
   //Create TrayMenu's items
   //Header
   CreateMenuItem(FPopupMenu.Items, 'Show MySimpleToDo', frmMain.ShowApp, 7, True);
-  CreateMenuItem(FPopupMenu.Items, 'Add a new ToDo item', AddNewToDoItem);
+  CreateMenuItem(FPopupMenu.Items, 'Add a new ToDo item', AddNewToDoItem, 3);
   //List
   CreateSeparator(FPopupMenu.Items);
   FTree.IterateSubtree(nil, CreateToDoList, @FPopupMenu);
