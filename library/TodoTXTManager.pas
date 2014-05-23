@@ -112,14 +112,14 @@ begin
   begin
     //Get full string of ToDo
     Result := PrepareString(SaveCheckedState) +
-                  PrepareString(SavePriority) +
-                  PrepareString(SaveCreateData) +
-                  PrepareString(SaveText) +
-                  PrepareString(SaveProjects) +
-                  PrepareString(SaveContexts) +
-                  PrepareString(SaveDeadLine) +
-                  PrepareString(SaveColor) +
-                  SaveThresold(NodeData);
+              PrepareString(SavePriority) +
+              PrepareString(SaveCreateData) +
+              PrepareString(SaveText) +
+              PrepareString(SaveProjects) +
+              PrepareString(SaveContexts) +
+              PrepareString(SaveDeadLine) +
+              PrepareString(SaveColor) +
+              SaveThresold(NodeData);
     ExcludeLastSeparator(Result);
   end;
 end;

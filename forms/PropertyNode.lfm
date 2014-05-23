@@ -11,7 +11,7 @@ object frmProperty: TfrmProperty
   OnCloseQuery = FormCloseQuery
   OnShow = FormShow
   Position = poOwnerFormCenter
-  LCLVersion = '1.2.0.3'
+  LCLVersion = '1.2.2.0'
   object grbItem: TGroupBox
     Left = 6
     Height = 328
@@ -219,7 +219,7 @@ object frmProperty: TfrmProperty
     end
     object btnColor: TColorButton
       Left = 304
-      Height = 25
+      Height = 24
       Top = 70
       Width = 75
       BorderWidth = 2
@@ -242,7 +242,6 @@ object frmProperty: TfrmProperty
     Width = 430
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
-    OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
     HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'

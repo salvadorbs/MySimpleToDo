@@ -67,7 +67,6 @@ type
     procedure FormShow(Sender: TObject);
     procedure lxContextsSelectionChange(Sender: TObject; User: boolean);
     procedure lxProjectsSelectionChange(Sender: TObject; User: boolean);
-    procedure OKButtonClick(Sender: TObject);
   private
     { private declarations }
     FNodeData: TBaseNodeData;
@@ -123,10 +122,6 @@ procedure TfrmProperty.lxProjectsSelectionChange(Sender: TObject; User: boolean
   );
 begin
   btnProjectsRemove.Enabled := lxContexts.ItemIndex <> -1;
-end;
-
-procedure TfrmProperty.OKButtonClick(Sender: TObject);
-begin
 end;
 
 procedure TfrmProperty.PopulateListBox(AListBox: TListBox; AStringList: TStringList);
@@ -211,6 +206,7 @@ end;
 procedure TfrmProperty.btnContextsAddClick(Sender: TObject);
 begin
   AddItemInListBox(lxContexts, edtContexts.Text);
+  edtContexts.Text := '';
 end;
 
 procedure TfrmProperty.btnContextsRemoveClick(Sender: TObject);
@@ -221,11 +217,13 @@ end;
 procedure TfrmProperty.btnContextsReplaceClick(Sender: TObject);
 begin
   ReplaceItemInListBox(lxContexts, edtContexts.Text);
+  edtContexts.Text := '';
 end;
 
 procedure TfrmProperty.btnProjectsAddClick(Sender: TObject);
 begin
   AddItemInListBox(lxProjects, edtProjects.Text);
+  edtProjects.Text := '';
 end;
 
 procedure TfrmProperty.btnProjectsRemoveClick(Sender: TObject);
@@ -236,6 +234,7 @@ end;
 procedure TfrmProperty.btnProjectsReplaceClick(Sender: TObject);
 begin
   ReplaceItemInListBox(lxProjects, edtProjects.Text);
+  edtProjects.Text := '';
 end;
 
 class function TfrmProperty.Execute(AOwner: TComponent; ANodeData: TBaseNodeData): Boolean;

@@ -122,7 +122,7 @@ uses
 
   FileUtil,
 
-  Helpers, Utils,
+  Helpers,
 
   LCLIntf;
 
@@ -384,8 +384,8 @@ begin
   S := Application.ExeName;
   AddInfo('Application name:', ExtractFileName(S));
   //Todo: Replace GetApplicationPath with FSettings.ConfigDir
-  AddInfo('Application path:', GetApplicationPath);
-  AddInfo('Application size:', FormatByteText(FileSize(S)));
+  //AddInfo('Application path:', GetApplicationPath);
+  //AddInfo('Application size:', FormatByteText(FileSize(S)));
   AddInfo('Current path:', ExtractFilePath(ParamStr(0)));
   AddInfo('Current user:', FVersionInfo.UserName);
   //
