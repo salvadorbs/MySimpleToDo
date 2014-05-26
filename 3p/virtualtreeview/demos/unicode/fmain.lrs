@@ -1,0 +1,54 @@
+LazarusResources.Add('TMainForm','FORMDATA',[
+  'TPF0'#9'TMainForm'#8'MainForm'#4'Left'#3'{'#1#6'Height'#3#248#1#3'Top'#3#166
+  +#0#5'Width'#3'e'#2#7'Caption'#6#28'VirtualTreeView Unicode Demo'#12'ClientHe'
+  +'ight'#3#248#1#11'ClientWidth'#3'e'#2#8'OnCreate'#7#10'FormCreate'#8'Positio'
+  +'n'#7#15'poDesktopCenter'#10'LCLVersion'#6#3'1.1'#0#12'TPageControl'#12'Main'
+  +'Notebook'#4'Left'#2#0#6'Height'#3#248#1#3'Top'#2#0#5'Width'#3'e'#2#10'Activ'
+  +'ePage'#7#11'WelcomePage'#5'Align'#7#8'alClient'#8'TabIndex'#2#0#8'TabOrder'
+  +#2#0#0#9'TTabSheet'#11'WelcomePage'#7'Caption'#6#20'Welcome Translations'#12
+  +'ClientHeight'#3#209#1#11'ClientWidth'#3'_'#2#0#18'TVirtualStringTree'#11'We'
+  +'lcomeTree'#4'Left'#2#3#6'Height'#3#175#1#3'Top'#2#31#5'Width'#3'Y'#2#5'Alig'
+  +'n'#7#8'alClient'#20'BorderSpacing.Around'#2#3#11'DefaultText'#6#4'Node'#20
+  +'Header.AutoSizeIndex'#2#0#14'Header.Columns'#14#1#8'Position'#2#0#4'Text'#6
+  +#8'Language'#5'Width'#3#200#0#0#1#8'Position'#2#1#4'Text'#6#11'Translation'#5
+  +'Width'#3#200#0#0#0#20'Header.DefaultHeight'#2#17#13'Header.Height'#2#20#14
+  +'Header.Options'#11#14'hoColumnResize'#6'hoDrag'#9'hoVisible'#0#8'TabOrder'#2
+  +#0#10'OnFreeNode'#7#19'WelcomeTreeFreeNode'#9'OnGetText'#7#18'WelcomeTreeGet'
+  +'Text'#0#0#6'TPanel'#15'WelcomeTopPanel'#4'Left'#2#0#6'Height'#2#28#3'Top'#2
+  +#0#5'Width'#3'_'#2#5'Align'#7#5'alTop'#10'BevelOuter'#7#6'bvNone'#12'ClientH'
+  +'eight'#2#28#11'ClientWidth'#3'_'#2#8'TabOrder'#2#1#0#7'TButton'#23'ChooseWe'
+  +'lcomeFontButton'#4'Left'#2#4#6'Height'#2#25#3'Top'#2#2#5'Width'#2'x'#18'Bor'
+  +'derSpacing.Left'#2#3#20'BorderSpacing.Around'#2#1#7'Caption'#6#11'Choose Fo'
+  +'nt'#7'OnClick'#7#28'ChooseWelcomeFontButtonClick'#8'TabOrder'#2#0#0#0#0#0#9
+  +'TTabSheet'#11'LCLTextPage'#7'Caption'#6#8'LCL Text'#12'ClientHeight'#3#209#1
+  +#11'ClientWidth'#3'_'#2#0#18'TVirtualStringTree'#11'LCLTextTree'#4'Left'#2#3
+  +#6'Height'#3#184#1#3'Top'#2#3#5'Width'#3#16#1#20'BorderSpacing.Around'#2#3#11
+  +'DefaultText'#6#4'Node'#20'Header.AutoSizeIndex'#2#0#14'Header.Columns'#14#0
+  +#20'Header.DefaultHeight'#2#17#17'Header.MainColumn'#2#255#14'Header.Options'
+  +#11#14'hoColumnResize'#6'hoDrag'#0#8'TabOrder'#2#0#23'TreeOptions.MiscOption'
+  +'s'#11#10'toEditable'#21'toFullRepaintOnResize'#12'toInitOnSave'#18'toToggle'
+  +'OnDblClick'#14'toWheelPanning'#0#10'OnFreeNode'#7#19'LCLTextTreeFreeNode'#9
+  +'OnGetText'#7#18'LCLTextTreeGetText'#9'OnNewText'#7#18'LCLTextTreeNewText'#0
+  +#0#7'TButton'#17'AddEditTextButton'#4'Left'#3#220#1#6'Height'#2#25#3'Top'#2#2
+  +#5'Width'#2'x'#7'Caption'#6#8'Add Text'#7'OnClick'#7#22'AddEditTextButtonCli'
+  +'ck'#8'TabOrder'#2#1#0#0#5'TEdit'#8'TextEdit'#4'Left'#3#28#1#6'Height'#2#21#3
+  +'Top'#2#2#5'Width'#3#184#0#8'TabOrder'#2#2#0#0#9'TComboBox'#12'TextComboBox'
+  +#4'Left'#3#28#1#6'Height'#2#21#3'Top'#2':'#5'Width'#3#184#0#10'ItemHeight'#2
+  +#0#13'Items.Strings'#1#6#4'N'#195#163'o'#6#9'Cora'#195#167#195#163'o'#6#3'Si'
+  +'m'#0#8'TabOrder'#2#3#0#0#7'TButton'#18'AddComboTextButton'#4'Left'#3#220#1#6
+  +'Height'#2#25#3'Top'#2':'#5'Width'#2'x'#7'Caption'#6#8'Add Text'#7'OnClick'#7
+  +#23'AddComboTextButtonClick'#8'TabOrder'#2#4#0#0#8'TListBox'#11'TextListBox'
+  +#4'Left'#3#28#1#6'Height'#2'p'#3'Top'#2'b'#5'Width'#3#184#0#13'Items.Strings'
+  +#1#6#4'N'#195#163'o'#6#9'Cora'#195#167#195#163'o'#6#3'Sim'#0#10'ItemHeight'#2
+  +#0#11'ScrollWidth'#3#182#0#8'TabOrder'#2#5#8'TopIndex'#2#255#0#0#7'TButton'
+  +#17'AddListTextButton'#4'Left'#3#220#1#6'Height'#2#25#3'Top'#2'b'#5'Width'#2
+  +'x'#7'Caption'#6#8'Add Text'#7'OnClick'#7#22'AddListTextButtonClick'#8'TabOr'
+  +'der'#2#6#0#0#5'TMemo'#8'TextMemo'#4'Left'#3#28#1#6'Height'#3#138#0#3'Top'#3
+  +#234#0#5'Width'#3#184#0#8'TabOrder'#2#7#0#0#7'TButton'#17'AddMemoTextButton'
+  +#4'Left'#3#220#1#6'Height'#2#25#3'Top'#3#234#0#5'Width'#2'x'#7'Caption'#6#8
+  +'Add Text'#7'OnClick'#7#22'AddMemoTextButtonClick'#8'TabOrder'#2#8#0#0#7'TBu'
+  +'tton'#22'ClearLCLTextTreeButton'#4'Left'#2#3#6'Height'#2#25#3'Top'#3#193#1#5
+  +'Width'#2'a'#7'Caption'#6#5'Clear'#7'OnClick'#7#27'ClearLCLTextTreeButtonCli'
+  +'ck'#8'TabOrder'#2#9#0#0#0#0#11'TFontDialog'#11'FontDialog1'#11'MinFontSize'
+  +#2#0#11'MaxFontSize'#2#0#4'left'#3#136#0#3'top'#2#24#0#0#0
+]);

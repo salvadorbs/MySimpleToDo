@@ -1,0 +1,124 @@
+LazarusResources.Add('TStateForm','FORMDATA',[
+  'TPF0'#10'TStateForm'#9'StateForm'#4'Left'#3#147#1#6'Height'#3'M'#2#3'Top'#3
+  +#147#0#5'Width'#3#222#1#18'HorzScrollBar.Page'#3#221#1#18'VertScrollBar.Page'
+  +#3'L'#2#13'ActiveControl'#7#14'EnableCheckBox'#11'BorderStyle'#7#12'bsToolWi'
+  +'ndow'#7'Caption'#6#31'Watch Virtual Treeview at work:'#12'ClientHeight'#3'M'
+  +#2#11'ClientWidth'#3#222#1#11'Font.Height'#2#242#9'Font.Name'#6#12'Arial Nar'
+  +'row'#0#9'TCheckBox'#14'EnableCheckBox'#4'Left'#2#9#6'Height'#2#13#3'Top'#2
+  +#14#5'Width'#2'x'#7'Caption'#6#21'Enable state tracking'#7'OnClick'#7#19'Ena'
+  +'bleCheckBoxClick'#8'TabOrder'#2#0#0#0#9'TGroupBox'#9'GroupBox1'#4'Left'#2#18
+  +#6'Height'#2'`'#3'Top'#2')'#5'Width'#3#228#0#7'Caption'#6#10' Changes: '#12
+  +'ClientHeight'#2'N'#11'ClientWidth'#3#224#0#8'TabOrder'#2#1#0#9'TCheckBox'#9
+  +'CheckBox1'#4'Left'#2#9#6'Height'#2#13#3'Top'#2#1#5'Width'#2'b'#7'Caption'#6
+  +#14'Change pending'#7'Enabled'#8#8'TabOrder'#2#0#0#0#9'TCheckBox'#9'CheckBox'
+  +'3'#4'Left'#2#9#6'Height'#2#13#3'Top'#2#19#5'Width'#2#127#7'Caption'#6#22'To'
+  +'ggle focus selection'#7'Enabled'#8#8'TabOrder'#2#1#0#0#9'TCheckBox'#9'Check'
+  +'Box4'#4'Left'#2#9#6'Height'#2#13#3'Top'#2'%'#5'Width'#2'U'#7'Caption'#6#13
+  +'Clear pending'#7'Enabled'#8#8'TabOrder'#2#2#0#0#9'TCheckBox'#10'CheckBox32'
+  +#4'Left'#2#9#6'Height'#2#13#3'Top'#2'6'#5'Width'#3#143#0#7'Caption'#6#24'Str'
+  +'ucture change pending'#7'Enabled'#8#8'TabOrder'#2#3#0#0#0#9'TGroupBox'#9'Gr'
+  +'oupBox2'#4'Left'#2#16#6'Height'#3#169#0#3'Top'#3#245#0#5'Width'#3#228#0#7'C'
+  +'aption'#6#16' Mouse actions: '#12'ClientHeight'#3#151#0#11'ClientWidth'#3
+  +#224#0#8'TabOrder'#2#2#0#9'TCheckBox'#9'CheckBox8'#4'Left'#2#6#6'Height'#2#13
+  +#3'Top'#2's'#5'Width'#3#131#0#7'Caption'#6#22'Draw selection pending'#7'Enab'
+  +'led'#8#8'TabOrder'#2#0#0#0#9'TCheckBox'#9'CheckBox9'#4'Left'#2#6#6'Height'#2
+  +#13#3'Top'#3#131#0#5'Width'#2'Z'#7'Caption'#6#14'Draw selecting'#7'Enabled'#8
+  +#8'TabOrder'#2#1#0#0#9'TCheckBox'#10'CheckBox19'#4'Left'#2#6#6'Height'#2#13#3
+  +'Top'#2#3#5'Width'#3#134#0#7'Caption'#6#22'Left mouse button down'#7'Enabled'
+  +#8#8'TabOrder'#2#2#0#0#9'TCheckBox'#10'CheckBox20'#4'Left'#2#6#6'Height'#2#13
+  +#3'Top'#2#21#5'Width'#2'~'#7'Caption'#6#19'Mouse check pending'#7'Enabled'#8
+  +#8'TabOrder'#2#3#0#0#9'TCheckBox'#10'CheckBox21'#4'Left'#2#6#6'Height'#2#13#3
+  +'Top'#2''''#5'Width'#3#147#0#7'Caption'#6#24'Middle mouse button down'#7'Ena'
+  +'bled'#8#8'TabOrder'#2#4#0#0#9'TCheckBox'#10'CheckBox27'#4'Left'#2#6#6'Heigh'
+  +'t'#2#13#3'Top'#2';'#5'Width'#3#141#0#7'Caption'#6#23'Right mouse button dow'
+  +'n'#7'Enabled'#8#8'TabOrder'#2#5#0#0#9'TCheckBox'#10'CheckBox43'#4'Left'#2#6
+  +#6'Height'#2#13#3'Top'#2'M'#5'Width'#2'|'#7'Caption'#6#19'Mouse wheel pannin'
+  +'g'#7'Enabled'#8#8'TabOrder'#2#6#0#0#9'TCheckBox'#10'CheckBox44'#4'Left'#2#6
+  +#6'Height'#2#13#3'Top'#2'_'#5'Width'#2'|'#7'Caption'#6#21'Mouse wheel scroll'
+  +'ing'#7'Enabled'#8#8'TabOrder'#2#7#0#0#0#9'TGroupBox'#9'GroupBox3'#4'Left'#3
+  +#2#1#6'Height'#2'r'#3'Top'#3'9'#1#5'Width'#3#210#0#7'Caption'#6#19' Keyboard'
+  +' actions: '#12'ClientHeight'#2'`'#11'ClientWidth'#3#206#0#8'TabOrder'#2#3#0
+  +#9'TCheckBox'#10'CheckBox10'#4'Left'#2#9#6'Height'#2#13#3'Top'#2#17#5'Width'
+  +#2'4'#7'Caption'#6#7'Editing'#7'Enabled'#8#8'TabOrder'#2#0#0#0#9'TCheckBox'
+  +#10'CheckBox11'#4'Left'#2#9#6'Height'#2#13#3'Top'#2'#'#5'Width'#2'O'#7'Capti'
+  +'on'#6#12'Edit pending'#7'Enabled'#8#8'TabOrder'#2#1#0#0#9'TCheckBox'#10'Che'
+  +'ckBox15'#4'Left'#2#9#6'Height'#2#13#3'Top'#2'H'#5'Width'#3#164#0#7'Caption'
+  +#6#30'Incremental search in progress'#7'Enabled'#8#8'TabOrder'#2#2#0#0#9'TCh'
+  +'eckBox'#10'CheckBox16'#4'Left'#2#9#6'Height'#2#13#3'Top'#2'6'#5'Width'#3#151
+  +#0#7'Caption'#6#26'Incremental search pending'#7'Enabled'#8#8'TabOrder'#2#3#0
+  +#0#9'TCheckBox'#10'CheckBox18'#4'Left'#2#9#6'Height'#2#13#3'Top'#2#255#5'Wid'
+  +'th'#2'p'#7'Caption'#6#17'Key check pending'#7'Enabled'#8#8'TabOrder'#2#4#0#0
+  +#0#9'TGroupBox'#9'GroupBox4'#4'Left'#3#2#1#6'Height'#3#168#0#3'Top'#2')'#5'W'
+  +'idth'#3#210#0#7'Caption'#6'$ Clipboard and drag''n drop actions: '#12'Clien'
+  +'tHeight'#3#150#0#11'ClientWidth'#3#206#0#8'TabOrder'#2#4#0#9'TCheckBox'#9'C'
+  +'heckBox5'#4'Left'#2#9#6'Height'#2#13#3'Top'#2'\'#5'Width'#2'g'#7'Caption'#6
+  +#18'Clipboard flushing'#7'Enabled'#8#8'TabOrder'#2#0#0#0#9'TCheckBox'#9'Chec'
+  +'kBox6'#4'Left'#2#9#6'Height'#2#13#3'Top'#2'n'#5'Width'#3#131#0#7'Caption'#6
+  +#22'Clipboard copy pending'#7'Enabled'#8#8'TabOrder'#2#1#0#0#9'TCheckBox'#9
+  +'CheckBox7'#4'Left'#2#9#6'Height'#2#13#3'Top'#3#128#0#5'Width'#2'{'#7'Captio'
+  +'n'#6#21'Clipboard cut pending'#7'Enabled'#8#8'TabOrder'#2#2#0#0#9'TCheckBox'
+  +#10'CheckBox24'#4'Left'#2#9#6'Height'#2#13#3'Top'#2'J'#5'Width'#3#151#0#7'Ca'
+  +'ption'#6#27'OLE drag''n drop in progress'#7'Enabled'#8#8'TabOrder'#2#3#0#0#9
+  +'TCheckBox'#10'CheckBox25'#4'Left'#2#9#6'Height'#2#13#3'Top'#2'8'#5'Width'#3
+  +#138#0#7'Caption'#6#23'OLE drag''n drop pending'#7'Enabled'#8#8'TabOrder'#2#4
+  +#0#0#9'TCheckBox'#10'CheckBox37'#4'Left'#2#9#6'Height'#2#13#3'Top'#2'%'#5'Wi'
+  +'dth'#3#157#0#7'Caption'#6#28'VCL dd with app. drag object'#7'Enabled'#8#8'T'
+  ,'abOrder'#2#5#0#0#9'TCheckBox'#10'CheckBox41'#4'Left'#2#9#6'Height'#2#13#3'T'
+  +'op'#2#1#5'Width'#3#150#0#7'Caption'#6#27'VCL drag''n drop in progress'#7'En'
+  +'abled'#8#8'TabOrder'#2#6#0#0#9'TCheckBox'#10'CheckBox42'#4'Left'#2#9#6'Heig'
+  +'ht'#2#13#3'Top'#2#19#5'Width'#3#137#0#7'Caption'#6#23'VCL drag''n drop pend'
+  +'ing'#7'Enabled'#8#8'TabOrder'#2#7#0#0#0#9'TGroupBox'#9'GroupBox5'#4'Left'#2
+  +#16#6'Height'#2'`'#3'Top'#3#141#0#5'Width'#3#228#0#7'Caption'#6#13' Tree cac'
+  +'he: '#12'ClientHeight'#2'N'#11'ClientWidth'#3#224#0#8'TabOrder'#2#5#0#9'TCh'
+  +'eckBox'#10'CheckBox31'#4'Left'#2#11#6'Height'#2#13#3'Top'#2#3#5'Width'#3#184
+  +#0#7'Caption'#6'"Tree cache validation stop request'#7'Enabled'#8#8'TabOrder'
+  +#2#0#0#0#9'TCheckBox'#10'CheckBox36'#4'Left'#2#11#6'Height'#2#13#3'Top'#2'3'
+  +#5'Width'#2'd'#7'Caption'#6#16'Tree cache valid'#7'Enabled'#8#8'TabOrder'#2#1
+  +#0#0#9'TCheckBox'#10'CheckBox39'#4'Left'#2#11#6'Height'#2#13#3'Top'#2#19#5'W'
+  +'idth'#3#160#0#7'Caption'#6#29'Tree cache is being validated'#7'Enabled'#8#8
+  +'TabOrder'#2#2#0#0#9'TCheckBox'#10'CheckBox40'#4'Left'#2#11#6'Height'#2#13#3
+  +'Top'#2'#'#5'Width'#3#158#0#7'Caption'#6#28'Tree cache invalid or unused'#7
+  +'Enabled'#8#8'TabOrder'#2#3#0#0#0#9'TGroupBox'#9'GroupBox6'#4'Left'#3#2#1#6
+  +'Height'#2'i'#3'Top'#3#209#0#5'Width'#3#210#0#7'Caption'#6#25' Collapse/Expa'
+  +'nd/Scroll: '#12'ClientHeight'#2'W'#11'ClientWidth'#3#206#0#8'TabOrder'#2#6#0
+  +#9'TCheckBox'#9'CheckBox2'#4'Left'#2#9#6'Height'#2#13#3'Top'#2#7#5'Width'#3
+  +#132#0#7'Caption'#6#25'Full collapse in progress'#7'Enabled'#8#8'TabOrder'#2
+  +#0#0#0#9'TCheckBox'#10'CheckBox12'#4'Left'#2#9#6'Height'#2#13#3'Top'#2#25#5
+  +'Width'#3#128#0#7'Caption'#6#23'Full expand in progress'#7'Enabled'#8#8'TabO'
+  +'rder'#2#1#0#0#9'TCheckBox'#10'CheckBox28'#4'Left'#2#9#6'Height'#2#13#3'Top'
+  +#2'+'#5'Width'#2'<'#7'Caption'#6#9'Scrolling'#7'Enabled'#8#8'TabOrder'#2#2#0
+  +#0#9'TCheckBox'#10'CheckBox29'#4'Left'#2#9#6'Height'#2#13#3'Top'#2'>'#5'Widt'
+  +'h'#2'n'#7'Caption'#6#19'Auto scroll pending'#7'Enabled'#8#8'TabOrder'#2#3#0
+  +#0#0#9'TGroupBox'#9'GroupBox7'#4'Left'#3#2#1#6'Height'#3#141#0#3'Top'#3#176#1
+  +#5'Width'#3#210#0#7'Caption'#6#15' Miscellanous: '#12'ClientHeight'#2'{'#11
+  +'ClientWidth'#3#206#0#8'TabOrder'#2#7#0#9'TCheckBox'#10'CheckBox13'#4'Left'#2
+  +#9#6'Height'#2#13#3'Top'#2#26#5'Width'#3#161#0#7'Caption'#6#28'Last hint win'
+  +'dow was from VT'#7'Enabled'#8#8'TabOrder'#2#0#0#0#9'TCheckBox'#10'CheckBox1'
+  +'4'#4'Left'#2#9#6'Height'#2#13#3'Top'#2'?'#5'Width'#2'M'#7'Caption'#6#12'In '
+  +'animation'#7'Enabled'#8#8'TabOrder'#2#1#0#0#9'TCheckBox'#10'CheckBox17'#4'L'
+  +'eft'#2#9#6'Height'#2#13#3'Top'#2'Q'#5'Width'#2':'#7'Caption'#6#9'Iterating'
+  +#7'Enabled'#8#8'TabOrder'#2#2#0#0#9'TCheckBox'#10'CheckBox23'#4'Left'#2#9#6
+  +'Height'#2#13#3'Top'#2','#5'Width'#3#133#0#7'Caption'#6#22'Need root count u'
+  +'pdate'#7'Enabled'#8#8'TabOrder'#2#3#0#0#9'TCheckBox'#10'CheckBox33'#4'Left'
+  +#2#9#6'Height'#2#13#3'Top'#2#8#5'Width'#3#143#0#7'Caption'#6#23'Synchronous '
+  +'mode active'#7'Enabled'#8#8'TabOrder'#2#4#0#0#9'TCheckBox'#10'CheckBox46'#4
+  +'Left'#2#9#6'Height'#2#13#3'Top'#2'c'#5'Width'#2'r'#7'Caption'#6#16'Popup me'
+  +'nu shown'#7'Enabled'#8#8'TabOrder'#2#5#0#0#0#9'TGroupBox'#9'GroupBox8'#4'Le'
+  +'ft'#2#18#6'Height'#3#150#0#3'Top'#3#166#1#5'Width'#3#228#0#7'Caption'#6#25
+  +' Window related actions: '#12'ClientHeight'#3#132#0#11'ClientWidth'#3#224#0
+  +#8'TabOrder'#2#8#0#9'TCheckBox'#10'CheckBox22'#4'Left'#2#9#6'Height'#2#13#3
+  +'Top'#2'r'#5'Width'#3#141#0#7'Caption'#6#25'Default node height scale'#7'Ena'
+  +'bled'#8#8'TabOrder'#2#0#0#0#9'TCheckBox'#10'CheckBox26'#4'Left'#2#9#6'Heigh'
+  +'t'#2#13#3'Top'#2':'#5'Width'#2'R'#7'Caption'#6#13'Tree painting'#7'Enabled'
+  +#8#8'TabOrder'#2#1#0#0#9'TCheckBox'#10'CheckBox30'#4'Left'#2#9#6'Height'#2#13
+  +#3'Top'#2'&'#5'Width'#2'a'#7'Caption'#6#15'Window resizing'#7'Enabled'#8#8'T'
+  +'abOrder'#2#2#0#0#9'TCheckBox'#10'CheckBox34'#4'Left'#2#9#6'Height'#2#13#3'T'
+  +'op'#2'J'#5'Width'#3#136#0#7'Caption'#6#25'Tumb tracking (scrollbar)'#7'Enab'
+  +'led'#8#8'TabOrder'#2#3#0#0#9'TCheckBox'#10'CheckBox35'#4'Left'#2#9#6'Height'
+  +#2#13#3'Top'#2'Z'#5'Width'#2'_'#7'Caption'#6#14'Updates locked'#7'Enabled'#8
+  +#8'TabOrder'#2#4#0#0#9'TCheckBox'#10'CheckBox38'#4'Left'#2#9#6'Height'#2#13#3
+  +'Top'#2#2#5'Width'#3#186#0#7'Caption'#6#31'Windows XP Theme support in use'#7
+  +'Enabled'#8#8'TabOrder'#2#5#0#0#9'TCheckBox'#10'CheckBox45'#4'Left'#2#9#6'He'
+  +'ight'#2#13#3'Top'#2#20#5'Width'#3#179#0#7'Caption'#6' Treewindow is under c'
+  +'onstruction'#7'Enabled'#8#8'TabOrder'#2#6#0#0#0#0
+]);

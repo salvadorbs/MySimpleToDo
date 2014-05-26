@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Compiler Value="/usr/bin/fpc" Date="1374722184"/>
+  <Params Value=" -MObjFPC -Scghi -O1 -g -gl -vewnhi -Fi/media/matteo/A04CF4544CF426A6/lazarus/componenti/virtualtreeview/demos/dragdrop/lib/x86_64-linux -Fu/media/matteo/A04CF4544CF426A6/lazarus/componenti/virtualtreeview/lib/x86_64-linux-qt -Fu/media/matteo/A04CF4544CF426A6/lazarus/componenti/lclextensions/lib/x86_64-linux-qt -Fu/home/matteo/.lazarus/lib/units/x86_64-linux/qt -Fu/usr/share/lazarus/1.2.0/lcl/units/x86_64-linux -Fu/usr/share/lazarus/1.2.0/components/lazutils/lib/x86_64-linux -Fu/usr/share/lazarus/1.2.0/packager/units/x86_64-linux -Fu/media/matteo/A04CF4544CF426A6/lazarus/componenti/virtualtreeview/demos/dragdrop/ -FU/media/matteo/A04CF4544CF426A6/lazarus/componenti/virtualtreeview/demos/dragdrop/lib/x86_64-linux/ -l -dLCL -dLCLqt vtvdragdrop.lpr"/>
+</CONFIG>
