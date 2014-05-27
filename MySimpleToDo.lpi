@@ -18,7 +18,7 @@
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
       <MinorVersionNr Value="2"/>
-      <BuildNr Value="56"/>
+      <BuildNr Value="61"/>
       <StringTable Comments="A simple ToDo Manager for you" CompanyName="Matteo Salvi" FileDescription="MySimpleToDo" InternalName="MySimpleToDo" LegalCopyright="(c) 2014 Matteo Salvi" ProductName="MySimpleToDo" ProductVersion="" HomePage="http://www.salvadorsoftware.com/"/>
     </VersionInfo>
     <BuildModes Count="1">

@@ -3,9 +3,10 @@ object frmMain: TfrmMain
   Height = 444
   Top = 181
   Width = 222
+  ActiveControl = pnlTop
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'My Simple ToDo'
-  ClientHeight = 424
+  ClientHeight = 444
   ClientWidth = 222
   KeyPreview = True
   Menu = MainMenu1
@@ -45,7 +46,7 @@ object frmMain: TfrmMain
   end
   object vstList: TVirtualStringTree
     Left = 0
-    Height = 396
+    Height = 416
     Top = 28
     Width = 222
     Align = alClient
@@ -726,7 +727,6 @@ object frmMain: TfrmMain
       Caption = 'File'
       object mniNew: TMenuItem
         Caption = 'New ToDo file'
-        ShortCut = 16462
         OnClick = mniNewClick
       end
       object mniLoad: TMenuItem
@@ -837,6 +837,7 @@ object frmMain: TfrmMain
       Caption = 'Edit'
       object mniArchiveToDos: TMenuItem
         Caption = 'Archive complete ToDos'
+        OnClick = mniArchiveToDosClick
       end
       object mniSort: TMenuItem
         Caption = 'Sort'

@@ -87,6 +87,7 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormWindowStateChange(Sender: TObject);
+    procedure mniArchiveToDosClick(Sender: TObject);
     procedure mniSortClick(Sender: TObject);
     procedure mniAboutClick(Sender: TObject);
     procedure mniCopyClick(Sender: TObject);
@@ -137,6 +138,7 @@ type
     FShutDownTime: Boolean;
     FSortType: TSortType;
     procedure CopyToClipboard;
+    procedure DeleteCheckedNodes(ATree: TBaseVirtualTree);
     procedure PasteFromClipboard;
     function ShowProperty(ATree: TBaseVirtualTree; ANode: PVirtualNode): Boolean;
     procedure ShowMainForm(Sender: TObject);
@@ -150,7 +152,9 @@ type
     { public declarations }
     procedure ExitApp(Sender: TObject);
     procedure ShowApp(Sender: TObject);
-    procedure AddNewToDoItem(AQuickMode: Boolean);
+    procedure AddNewToDoItem(ATree: TBaseVirtualTree; AQuickMode: Boolean);
+
+    property Settings: TSettings read FSettings;
   end;
 
 var
@@ -246,7 +250,7 @@ procedure TfrmMain.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
   );
 begin
   if (Shift = [ssCtrl]) and (Ord(Key) = VK_N) then
-    AddNewToDoItem(True)
+    AddNewToDoItem(vstList, True)
   else if (Shift = [ssCtrl]) and (Ord(Key) = VK_F) then
     edtSearch.SetFocus;
 end;
@@ -258,6 +262,15 @@ begin
     WindowState := wsNormal;
     HideMainForm;
   end;
+end;
+
+procedure TfrmMain.mniArchiveToDosClick(Sender: TObject);
+var
+  sPath: string;
+begin
+  sPath := ChangeFileExt(FSettings.LastToDoFileName, '.archive.txt');
+  FToDoManager.ArchiveToDos(sPath);
+  DeleteCheckedNodes(vstList);
 end;
 
 procedure TfrmMain.mniSortClick(Sender: TObject);
@@ -297,7 +310,7 @@ end;
 
 procedure TfrmMain.mniAddItemClick(Sender: TObject);
 begin
-  AddNewToDoItem(False);
+  AddNewToDoItem(vstList, False);
 end;
 
 procedure TfrmMain.mniExitClick(Sender: TObject);
@@ -621,7 +634,31 @@ begin
   end;
 end;
 
-procedure TfrmMain.AddNewToDoItem(AQuickMode: Boolean);
+procedure TfrmMain.DeleteCheckedNodes(ATree: TBaseVirtualTree);
+var
+  Node  : PVirtualNode;
+  Nodes : TNodeArray;
+  I     : Integer;
+begin
+  //Find all checked nodes
+  I := 0;
+  Node := vstList.GetFirst;
+  while Assigned(Node) do
+  begin
+    if ATree.CheckState[Node] = csCheckedNormal then
+    begin
+      SetLength(Nodes, I + 1);
+      Nodes[I] := Node;
+      Inc(I);
+    end;
+    Node := vstList.GetNext(Node);
+  end;
+  //Delete all checked nodes
+  for I := High(Nodes) downto 0 do
+    ATree.DeleteNode(Nodes[I]);
+end;
+
+procedure TfrmMain.AddNewToDoItem(ATree: TBaseVirtualTree; AQuickMode: Boolean);
 var
   Node: PVirtualNode;
 begin
@@ -629,18 +666,18 @@ begin
     Log('Added new ToDo Item (quick mode)', llInfo)
   else
     Log('Added new ToDo Item', llInfo);
-  vstList.BeginUpdate;
+  ATree.BeginUpdate;
   try
-    Node := AddVSTNode(vstList);
+    Node := AddVSTNode(ATree);
     //Quick mode
     if AQuickMode then
-      vstList.EditNode(Node, -1)
+      ATree.EditNode(Node, -1)
     else begin
-      if not(ShowProperty(vstList, Node)) then
-        vstList.DeleteNode(Node);
+      if not(ShowProperty(ATree, Node)) then
+        ATree.DeleteNode(Node);
     end;
   finally
-    vstList.EndUpdate;
+    ATree.EndUpdate;
   end;
 end;
 

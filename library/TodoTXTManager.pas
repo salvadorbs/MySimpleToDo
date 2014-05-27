@@ -61,6 +61,7 @@ type
 
     procedure Load(const AFileName: string);
     procedure SaveAs(const AFileName: string);
+    procedure ArchiveToDos(const AFileName: string);
 
     function NodeToString(const ANode: PVirtualNode): string;
     function StringToNode(const ALine: string): PVirtualNode;
@@ -432,6 +433,29 @@ begin
     end;
   finally
     Log('ToDo list saved in ' + AFileName, llInfo);
+    CloseFile(MyFile);
+  end;
+end;
+
+procedure TToDoTXTManager.ArchiveToDos(const AFileName: string);
+var
+  MyFile: TextFile;
+  Node: PVirtualNode;
+begin
+  Assign(MyFile, AFileName);
+  try
+    Append(MyFile);
+    Node := FTree.GetFirst;
+    while Assigned(Node) do
+    begin
+      //Get node string and write in file
+      if (FTree.CheckState[Node] = csCheckedNormal) then
+        WriteLn(MyFile, NodeToString(Node));
+      //Get next node
+      Node := FTree.GetNext(Node);
+    end;
+  finally
+    Log('Export completed ToDos in ' + AFileName, llInfo);
     CloseFile(MyFile);
   end;
 end;

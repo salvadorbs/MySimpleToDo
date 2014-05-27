@@ -100,7 +100,7 @@ end;
 
 procedure TTrayMenu.AddNewToDoItem(Sender: TObject);
 begin
-  frmMain.AddNewToDoItem(False);
+  frmMain.AddNewToDoItem(FTree, False);
 end;
 
 procedure TTrayMenu.CreateToDoList(Sender: TBaseVirtualTree;

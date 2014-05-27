@@ -129,7 +129,7 @@ begin
   IniFile := TIniFile.Create(FConfigFilePath);
   try
     SaveFormProps(IniFile, frmMain);
-    IniFile.WriteString('General', 'FileToDo', FLastToDoFileName);
+    IniFile.WriteString('General', 'FileToDo', Self.LastToDoFileName);
   finally
     IniFile.Free;
   end;
