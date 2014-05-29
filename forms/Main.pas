@@ -26,7 +26,8 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus,
   StdCtrls, EditBtn, ExtCtrls, Buttons, VirtualTrees, TodoTXTManager,
   {$IFDEF WINDOWS}ActiveX{$ELSE}FakeActiveX{$ENDIF}, filechannel, sharedloggerlcl,
-  UniqueInstance, SearchEdit, Clipbrd, ColorUtils, TrayMenu, LCLType, Settings;
+  UniqueInstance, SearchEdit, Clipbrd, ColorUtils, TrayMenu, LCLType, ActnList,
+  StdActns, Settings;
 
 type
 
@@ -35,13 +36,34 @@ type
   { TfrmMain }
 
   TfrmMain = class(TForm)
+    actAddTodo: TAction;
+    actCopy: TAction;
+    actDelete: TAction;
+    actSort: TAction;
+    actProperties: TAction;
+    actArchive: TAction;
+    actDeadLine: TAction;
+    actPriority: TAction;
+    actText: TAction;
+    actUndo: TAction;
+    actCut: TAction;
+    Action8: TAction;
+    actPaste: TAction;
+    ActionList1: TActionList;
     ilSmallIcons: TImageList;
     MainMenu1: TMainMenu;
+    mniUndo: TMenuItem;
+    mniUndo2: TMenuItem;
+    mniArchiveToDos2: TMenuItem;
     mniCopy2: TMenuItem;
     mniCut2: TMenuItem;
+    mniDeadline2: TMenuItem;
     mniDelete2: TMenuItem;
     mniPaste2: TMenuItem;
+    mniPriority2: TMenuItem;
     mniSep6: TMenuItem;
+    mniSep9: TMenuItem;
+    mniSort2: TMenuItem;
     mniText: TMenuItem;
     mniArchiveToDos: TMenuItem;
     mniDeadline: TMenuItem;
@@ -57,6 +79,7 @@ type
     mniExport: TMenuItem;
     mniImport: TMenuItem;
     mniSep3: TMenuItem;
+    mniSep0: TMenuItem;
     mniLoad: TMenuItem;
     mniHelp: TMenuItem;
     mniFile: TMenuItem;
@@ -67,8 +90,11 @@ type
     mniSep2: TMenuItem;
     mniDelete: TMenuItem;
     mniProperties: TMenuItem;
+    mniProperties2: TMenuItem;
     mniSeparator1: TMenuItem;
     mniAddItem: TMenuItem;
+    mniAddItem2: TMenuItem;
+    mniText2: TMenuItem;
     OpenDialog1: TOpenDialog;
     pnlTop: TPanel;
     pmList: TPopupMenu;
@@ -77,6 +103,21 @@ type
     TrayIcon1: TTrayIcon;
     UniqueInstance1: TUniqueInstance;
     vstList: TVirtualStringTree;
+    procedure actAddTodoExecute(Sender: TObject);
+    procedure actArchiveExecute(Sender: TObject);
+    procedure actArchiveUpdate(Sender: TObject);
+    procedure actCopyExecute(Sender: TObject);
+    procedure actCopyUpdate(Sender: TObject);
+    procedure actCutExecute(Sender: TObject);
+    procedure actCutUpdate(Sender: TObject);
+    procedure actDeleteExecute(Sender: TObject);
+    procedure actDeleteUpdate(Sender: TObject);
+    procedure actPasteExecute(Sender: TObject);
+    procedure actPasteUpdate(Sender: TObject);
+    procedure actPropertiesExecute(Sender: TObject);
+    procedure actPropertiesUpdate(Sender: TObject);
+    procedure actSortUpdate(Sender: TObject);
+    procedure actSortXyzExecute(Sender: TObject);
     procedure edtSearchChange(Sender: TObject);
     procedure edtSearchKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
       );
@@ -87,21 +128,12 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormWindowStateChange(Sender: TObject);
-    procedure mniArchiveToDosClick(Sender: TObject);
-    procedure mniSortClick(Sender: TObject);
     procedure mniAboutClick(Sender: TObject);
-    procedure mniCopyClick(Sender: TObject);
-    procedure mniCutClick(Sender: TObject);
-    procedure mniDeleteClick(Sender: TObject);
-    procedure mniAddItemClick(Sender: TObject);
     procedure mniExitClick(Sender: TObject);
     procedure mniExportClick(Sender: TObject);
     procedure mniImportClick(Sender: TObject);
     procedure mniLoadClick(Sender: TObject);
     procedure mniNewClick(Sender: TObject);
-    procedure mniPasteClick(Sender: TObject);
-    procedure mniPropertiesClick(Sender: TObject);
-    procedure pmListPopup(Sender: TObject);
     procedure TrayIcon1DblClick(Sender: TObject);
     procedure UniqueInstance1OtherInstance(Sender: TObject;
       ParamCount: Integer; Parameters: array of String);
@@ -139,6 +171,7 @@ type
     FSortType: TSortType;
     procedure CopyToClipboard;
     procedure DeleteCheckedNodes(ATree: TBaseVirtualTree);
+    function GetCheckedNodes(ATree: TBaseVirtualTree): TNodeArray;
     procedure PasteFromClipboard;
     function ShowProperty(ATree: TBaseVirtualTree; ANode: PVirtualNode): Boolean;
     procedure ShowMainForm(Sender: TObject);
@@ -207,6 +240,95 @@ begin
   end;
 end;
 
+procedure TfrmMain.actArchiveExecute(Sender: TObject);
+var
+  sPath: string;
+begin
+  sPath := ChangeFileExt(FSettings.LastToDoFileName, '.archive.txt');
+  FToDoManager.ArchiveToDos(sPath);
+  DeleteCheckedNodes(vstList);
+end;
+
+procedure TfrmMain.actArchiveUpdate(Sender: TObject);
+begin
+  TAction(Sender).Enabled := Length(GetCheckedNodes(vstList)) > 0;
+end;
+
+procedure TfrmMain.actAddTodoExecute(Sender: TObject);
+begin
+  AddNewToDoItem(vstList, False);
+end;
+
+procedure TfrmMain.actCopyExecute(Sender: TObject);
+begin
+  CopyToClipboard;
+end;
+
+procedure TfrmMain.actCopyUpdate(Sender: TObject);
+begin
+  TAction(Sender).Enabled := (vstList.SelectedCount > 0);
+end;
+
+procedure TfrmMain.actCutExecute(Sender: TObject);
+begin
+  CopyToClipboard;
+  vstList.DeleteSelectedNodes;
+end;
+
+procedure TfrmMain.actCutUpdate(Sender: TObject);
+begin
+  TAction(Sender).Enabled := (vstList.SelectedCount > 0);
+end;
+
+procedure TfrmMain.actDeleteExecute(Sender: TObject);
+var
+  I: Integer;
+begin
+  I := vstList.SelectedCount;
+  if I > 0 then
+  begin
+    Log(Format('Removed %d selected ToDo Items', [I]), llInfo);
+    vstList.DeleteSelectedNodes;
+  end;
+end;
+
+procedure TfrmMain.actDeleteUpdate(Sender: TObject);
+begin
+  TAction(Sender).Enabled := (vstList.SelectedCount > 0);
+end;
+
+procedure TfrmMain.actPasteExecute(Sender: TObject);
+begin
+  PasteFromClipboard;
+end;
+
+procedure TfrmMain.actPasteUpdate(Sender: TObject);
+begin
+  TAction(Sender).Enabled := (Clipboard.AsText <> '');
+end;
+
+procedure TfrmMain.actPropertiesExecute(Sender: TObject);
+begin
+  ShowProperty(vstList, vstList.FocusedNode);
+end;
+
+procedure TfrmMain.actPropertiesUpdate(Sender: TObject);
+begin
+  TAction(Sender).Enabled := (vstList.SelectedCount > 0);
+end;
+
+procedure TfrmMain.actSortUpdate(Sender: TObject);
+begin
+  TAction(Sender).Enabled := vstList.HasChildren[vstList.RootNode];
+end;
+
+procedure TfrmMain.actSortXyzExecute(Sender: TObject);
+begin
+  if Sender is TAction then
+    FSortType := TSortType(TAction(Sender).Tag);
+  vstList.SortTree(0, sdAscending);
+end;
+
 procedure TfrmMain.edtSearchKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -264,53 +386,9 @@ begin
   end;
 end;
 
-procedure TfrmMain.mniArchiveToDosClick(Sender: TObject);
-var
-  sPath: string;
-begin
-  sPath := ChangeFileExt(FSettings.LastToDoFileName, '.archive.txt');
-  FToDoManager.ArchiveToDos(sPath);
-  DeleteCheckedNodes(vstList);
-end;
-
-procedure TfrmMain.mniSortClick(Sender: TObject);
-begin
-  if Sender is TMenuItem then
-    FSortType := TSortType(TMenuItem(Sender).Tag);
-  vstList.SortTree(0, sdAscending);
-end;
-
 procedure TfrmMain.mniAboutClick(Sender: TObject);
 begin
   ShowAboutDialog;
-end;
-
-procedure TfrmMain.mniCopyClick(Sender: TObject);
-begin
-  CopyToClipboard;
-end;
-
-procedure TfrmMain.mniCutClick(Sender: TObject);
-begin
-  CopyToClipboard;
-  vstList.DeleteSelectedNodes;
-end;
-
-procedure TfrmMain.mniDeleteClick(Sender: TObject);
-var
-  I: Integer;
-begin
-  I := vstList.SelectedCount;
-  if I > 0 then
-  begin
-    Log(Format('Removed %d selected ToDo Items', [I]), llInfo);
-    vstList.DeleteSelectedNodes;
-  end;
-end;
-
-procedure TfrmMain.mniAddItemClick(Sender: TObject);
-begin
-  AddNewToDoItem(vstList, False);
 end;
 
 procedure TfrmMain.mniExitClick(Sender: TObject);
@@ -353,25 +431,6 @@ begin
     FSettings.LastToDoFileName := SaveDialog1.FileName;
     Log('Create new ToDo.txt ' + SaveDialog1.FileName, llInfo);
   end;
-end;
-
-procedure TfrmMain.mniPasteClick(Sender: TObject);
-begin
-  PasteFromClipboard;
-end;
-
-procedure TfrmMain.mniPropertiesClick(Sender: TObject);
-begin
-  ShowProperty(vstList, vstList.FocusedNode);
-end;
-
-procedure TfrmMain.pmListPopup(Sender: TObject);
-begin
-  //Enable menu items based of Node or clipboard
-  mniCut.Enabled   := (vstList.SelectedCount > 0);
-  mniCopy.Enabled  := (vstList.SelectedCount > 0);
-  mniPaste.Enabled := (Clipboard.AsText <> '');
-  mniProperties.Enabled := (vstList.SelectedCount > 0);
 end;
 
 procedure TfrmMain.ShowMainForm(Sender: TObject);
@@ -636,9 +695,19 @@ end;
 
 procedure TfrmMain.DeleteCheckedNodes(ATree: TBaseVirtualTree);
 var
-  Node  : PVirtualNode;
   Nodes : TNodeArray;
   I     : Integer;
+begin
+  Nodes := GetCheckedNodes(ATree);
+  //Delete all checked nodes
+  for I := High(Nodes) downto 0 do
+    ATree.DeleteNode(Nodes[I]);
+end;
+
+function TfrmMain.GetCheckedNodes(ATree: TBaseVirtualTree): TNodeArray;
+var
+  Node: PVirtualNode;
+  I: Integer;
 begin
   //Find all checked nodes
   I := 0;
@@ -647,15 +716,12 @@ begin
   begin
     if ATree.CheckState[Node] = csCheckedNormal then
     begin
-      SetLength(Nodes, I + 1);
-      Nodes[I] := Node;
+      SetLength(Result, I + 1);
+      Result[I] := Node;
       Inc(I);
     end;
     Node := vstList.GetNext(Node);
   end;
-  //Delete all checked nodes
-  for I := High(Nodes) downto 0 do
-    ATree.DeleteNode(Nodes[I]);
 end;
 
 procedure TfrmMain.AddNewToDoItem(ATree: TBaseVirtualTree; AQuickMode: Boolean);

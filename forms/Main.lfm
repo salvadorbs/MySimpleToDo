@@ -6,7 +6,7 @@ object frmMain: TfrmMain
   ActiveControl = pnlTop
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'My Simple ToDo'
-  ClientHeight = 444
+  ClientHeight = 424
   ClientWidth = 222
   KeyPreview = True
   Menu = MainMenu1
@@ -46,7 +46,7 @@ object frmMain: TfrmMain
   end
   object vstList: TVirtualStringTree
     Left = 0
-    Height = 416
+    Height = 396
     Top = 28
     Width = 222
     Align = alClient
@@ -124,11 +124,10 @@ object frmMain: TfrmMain
   end
   object pmList: TPopupMenu
     Images = ilSmallIcons
-    OnPopup = pmListPopup
     left = 56
     top = 96
     object mniAddItem: TMenuItem
-      Caption = 'Add new todo'
+      Action = actAddTodo
       Bitmap.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
         2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
@@ -165,14 +164,35 @@ object frmMain: TfrmMain
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
-      ImageIndex = 3
-      OnClick = mniAddItemClick
+    end
+    object mniSep9: TMenuItem
+      Caption = '-'
+    end
+    object mniArchiveToDos: TMenuItem
+      Action = actArchive
+    end
+    object mniSort: TMenuItem
+      Action = actSort
+      object mniDeadline: TMenuItem
+        Action = actDeadLine
+      end
+      object mniPriority: TMenuItem
+        Tag = 1
+        Action = actPriority
+      end
+      object mniText: TMenuItem
+        Tag = 2
+        Action = actText
+      end
+    end
+    object mniUndo: TMenuItem
+      Action = actUndo
     end
     object mniSep2: TMenuItem
       Caption = '-'
     end
     object mniCut: TMenuItem
-      Caption = 'Cut'
+      Action = actCut
       Bitmap.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
         2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
@@ -209,12 +229,9 @@ object frmMain: TfrmMain
         FF00FFFFFF05FFFFFF23FFFFFF1FFFFFFF01FFFFFF00FFFFFF00FFFFFF00FFFF
         FF00FFFFFF01FFFFFF1FFFFFFF23FFFFFF05FFFFFF00FFFFFF00
       }
-      ImageIndex = 1
-      ShortCut = 16472
-      OnClick = mniCutClick
     end
     object mniCopy: TMenuItem
-      Caption = 'Copy'
+      Action = actCopy
       Bitmap.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
         2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
@@ -251,12 +268,9 @@ object frmMain: TfrmMain
         FF00FFFFFF00FFFFFF00FFFFFF04FFFFFF17FFFFFF25FFFFFF26FFFFFF26FFFF
         FF26FFFFFF26FFFFFF26FFFFFF25FFFFFF17FFFFFF04FFFFFF00
       }
-      ImageIndex = 0
-      ShortCut = 16451
-      OnClick = mniCopyClick
     end
     object mniPaste: TMenuItem
-      Caption = 'Paste'
+      Action = actPaste
       Bitmap.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
         2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
@@ -293,12 +307,9 @@ object frmMain: TfrmMain
         FF04FFFFFF17DFDFDF29C3C3C32E000000EC000000EC000000EC000000EC0000
         00ECC3C3C32EDFDFDF29FFFFFF18FFFFFF05FFFFFF00FFFFFF00
       }
-      ImageIndex = 2
-      ShortCut = 16470
-      OnClick = mniPasteClick
     end
     object mniDelete: TMenuItem
-      Caption = 'Delete'
+      Action = actDelete
       Bitmap.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
         2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
@@ -335,15 +346,12 @@ object frmMain: TfrmMain
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
-      ImageIndex = 4
-      ShortCut = 46
-      OnClick = mniDeleteClick
     end
     object mniSep1: TMenuItem
       Caption = '-'
     end
     object mniProperties: TMenuItem
-      Caption = 'Properties'
+      Action = actProperties
       Bitmap.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
         2000000000000004000064000000640000000000000000000000999999008D8D
@@ -380,9 +388,6 @@ object frmMain: TfrmMain
         D6CFD5D5D5FFD5D5D5FFD5D5D5FFD5D5D5FFD5D5D5FFD5D5D5FFD5D5D5FFCFCF
         D7FF7D81EAFF777BE4FFC2C2D7FFD5D5D5FFD6D6D6CFD9D9D942
       }
-      ImageIndex = 6
-      ShortCut = 13
-      OnClick = mniPropertiesClick
     end
   end
   object UniqueInstance1: TUniqueInstance
@@ -835,32 +840,73 @@ object frmMain: TfrmMain
     end
     object mniEdit: TMenuItem
       Caption = 'Edit'
-      object mniArchiveToDos: TMenuItem
-        Caption = 'Archive complete ToDos'
-        OnClick = mniArchiveToDosClick
-      end
-      object mniSort: TMenuItem
-        Caption = 'Sort'
-        object mniDeadline: TMenuItem
-          Caption = 'Deadline'
-          OnClick = mniSortClick
-        end
-        object mniPriority: TMenuItem
-          Tag = 1
-          Caption = 'Priority'
-          OnClick = mniSortClick
-        end
-        object mniText: TMenuItem
-          Tag = 2
-          Caption = 'Text'
-          OnClick = mniSortClick
-        end
+      object mniAddItem2: TMenuItem
+        Action = actAddTodo
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF19FFFFFF65FFFFFF67FFFFFF67FFFF
+          FF67FFFFFF1DFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF250202027A0000007D0000007D0000
+          007DE6E6E628FFFFFF01FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF250000008400000087000000870000
+          0087E0E0E029FFFFFF01FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF1AFFFFFF67FFFFFF67FFFFFF670404048E00000091000000910000
+          0091F5F5F567FFFFFF67FFFFFF67FFFFFF1AFFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF260000009B0000009B0000009B0000009B0000009B0000009B0000
+          009B0000009B0000009B0000009BFFFFFF26FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF26000000A5000000A5000000A5000000A5000000A5000000A50000
+          00A5000000A5000000A5000000A5FFFFFF26FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF26000000AF000000AF000000AF000000AF000000AF000000AF0000
+          00AF000000AF000000AF000000AFFFFFFF26FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF26000000DC000000DC000000DC000000BA000000B9000000B90000
+          00B9000000DB000000DC000000DCFFFFFF26FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF1AFFFFFF26FFFFFF26FFFFFF26000000BE000000C3000000C30000
+          00C3DBDBDB2AFFFFFF26FFFFFF26FFFFFF1AFFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF25000000C8000000CD000000CD0000
+          00CDDBDBDB2AFFFFFF01FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF25000000E7000000EB000000EB0000
+          00EBC2C2C22EFFFFFF01FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF15FFFFFF26FFFFFF26FFFFFF26FFFF
+          FF26FFFFFF1BFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
+        }
       end
       object mniSep6: TMenuItem
         Caption = '-'
       end
+      object mniArchiveToDos2: TMenuItem
+        Action = actArchive
+      end
+      object mniSort2: TMenuItem
+        Action = actSort
+        object mniDeadline2: TMenuItem
+          Action = actDeadLine
+        end
+        object mniPriority2: TMenuItem
+          Tag = 1
+          Action = actPriority
+        end
+        object mniText2: TMenuItem
+          Tag = 2
+          Action = actText
+        end
+      end
+      object mniUndo2: TMenuItem
+        Action = actUndo
+      end
+      object mniSep8: TMenuItem
+        Caption = '-'
+      end
       object mniCut2: TMenuItem
-        Caption = 'Cut'
+        Action = actCut
         Bitmap.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
           2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
@@ -897,12 +943,9 @@ object frmMain: TfrmMain
           FF00FFFFFF05FFFFFF23FFFFFF1FFFFFFF01FFFFFF00FFFFFF00FFFFFF00FFFF
           FF00FFFFFF01FFFFFF1FFFFFFF23FFFFFF05FFFFFF00FFFFFF00
         }
-        ImageIndex = 1
-        ShortCut = 16472
-        OnClick = mniCutClick
       end
       object mniCopy2: TMenuItem
-        Caption = 'Copy'
+        Action = actCopy
         Bitmap.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
           2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
@@ -939,12 +982,9 @@ object frmMain: TfrmMain
           FF00FFFFFF00FFFFFF00FFFFFF04FFFFFF17FFFFFF25FFFFFF26FFFFFF26FFFF
           FF26FFFFFF26FFFFFF26FFFFFF25FFFFFF17FFFFFF04FFFFFF00
         }
-        ImageIndex = 0
-        ShortCut = 16451
-        OnClick = mniCopyClick
       end
       object mniPaste2: TMenuItem
-        Caption = 'Paste'
+        Action = actPaste
         Bitmap.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
           2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
@@ -981,12 +1021,9 @@ object frmMain: TfrmMain
           FF04FFFFFF17DFDFDF29C3C3C32E000000EC000000EC000000EC000000EC0000
           00ECC3C3C32EDFDFDF29FFFFFF18FFFFFF05FFFFFF00FFFFFF00
         }
-        ImageIndex = 2
-        ShortCut = 16470
-        OnClick = mniPasteClick
       end
       object mniDelete2: TMenuItem
-        Caption = 'Delete'
+        Action = actDelete
         Bitmap.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
           2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
@@ -1023,9 +1060,48 @@ object frmMain: TfrmMain
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
         }
-        ImageIndex = 4
-        ShortCut = 46
-        OnClick = mniDeleteClick
+      end
+      object mniSep0: TMenuItem
+        Caption = '-'
+      end
+      object mniProperties2: TMenuItem
+        Action = actProperties
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000999999008D8D
+          8DDA868686FF868686FF868686FF868686FF868686FF868686FF868686FF8686
+          86FF868686FF868686FF868686FF868686FF8D8D8DDA99999900929292D9C7C7
+          C7FFDFDFDFFFDFDFDFFFDFDFDFFFDFDFDFFFDFDFDFFFD2D7DBFFDFDFDFFFDFDF
+          DFFFDFDFDFFFDFDFDFFFDFDFDFFFDFDFDFFFC7C7C7FF929292D9919191FFE1E1
+          E1FFE1E1E1FFE1E1E1FFE1E1E1FFE1E1E1FFE1E1E1FF68859BFF5E7085FF9999
+          99FFABABABFFD1D1D1FFE1E1E1FFE1E1E1FFE1E1E1FF919191FF969696FFE3E3
+          E3FFE3E3E3FFB9A29CFFB9A29CFFB9A29CFFB9A29CFF779CB4FF5589BDFF8588
+          8AFF959595FF9F9F9FFFB9B9B9FFD9D9D9FFE3E3E3FF969696FF9B9B9BFFE4E4
+          E4FFE4E4E4FFE4E4E4FFE4E4E4FFE4E4E4FFE4E4E4FFB2DBF3FF79A8D9FF4878
+          AEFFA8A8A8FFA4A4A4FFADADADFFB7B7B7FFCBCBCBFF979797FFA0A0A0FFE6E6
+          E6FFE6E6E6FFBBA49EFFBBA49EFFBBA49EFFBBA49EFF85C9E6FF1598F6FF1562
+          B9FFA4908BFFAF9994FF9B8883FFBDBDBDFFC6C6C6FF909090FFA5A5A5FFE8E8
+          E8FFE8E8E8FFE8E8E8FFE8E8E8FFE8E8E8FFE8E8E8FFB9E2F3FF0291F4FF096B
+          D9FFA5B0BCFFE2E2E2FFE8E8E8FFDDDDDDFFD2D2D2FF989898FFABABABFFEAEA
+          EAFFEAEAEAFFBDA6A0FFBDA6A0FFBDA6A0FFBDA6A0FFB4B2B4FF18BBFFFF139E
+          FFFF5F718EFFAB9691FFBDA6A0FFEAEAEAFFEAEAEAFFA8A8A8FFB0B0B0FFECEC
+          ECFFECECECFFECECECFFECECECFFECECECFFECECECFFEBECECFF4AC9FEFF0D99
+          FBFF447BB8FFD2D2D2FFE6E6E6FFECECECFFECECECFFB0B0B0FFB5B5B5FFEEEE
+          EEFFEEEEEEFFC0A9A3FFC0A9A3FFC0A9A3FFC0A9A3FFC0A9A3FF83C6E2FF0794
+          F7FF1264C3FFAE9A95FFB59F99FFEEEEEEFFEEEEEEFFB5B5B5FFBBBBBBFFEFEF
+          EFFFEFEFEFFFEFEFEFFFEFEFEFFFEFEFEFFFEFEFEFFFEFEFEFFFC7E9F6FF0190
+          F4FF096EDEFFB2C0D0FFE2E2E2FFEBEBEBFFEFEFEFFFBBBBBBFFC0C0C0FFF1F1
+          F1FFF1F1F1FFC2ABA5FFC2ABA5FFC2ABA5FFC2ABA5FFC2ABA5FFBBB3B3FF3CC3
+          FBFF4597D0FF54637AFFBCA6A0FFEDEDEDFFF1F1F1FFC0C0C0FFC5C5C5FFF3F3
+          F3FFF3F3F3FFF3F3F3FFF3F3F3FFF3F3F3FFF3F3F3FFF3F3F3FFF3F3F3FFB9C2
+          C6FFAAAAAAFF65696DFFF0F0F0FFF3F3F3FFF3F3F3FFC5C5C5FFCCCCCCFFF6F6
+          F6FFF5F5F5FFF5F5F5FFF5F5F5FFF5F5F5FFF5F5F5FFF5F5F5FFF5F5F5FFBCBC
+          BCFFC7C7C7FF636366FFF0F0F2FFF5F5F5FFF6F6F6FFCCCCCCFFD2D2D2CFEEEE
+          EEFF9F9F9FFFF8F8F8FF9F9F9FFFF8F8F8FF9F9F9FFFF8F8F8FF9F9F9FFFCDCD
+          DFFF8B8EE9FF5358E3FF8889AFFFF8F8F8FF999999FFD2D2D2CFD9D9D942D6D6
+          D6CFD5D5D5FFD5D5D5FFD5D5D5FFD5D5D5FFD5D5D5FFD5D5D5FFD5D5D5FFCFCF
+          D7FF7D81EAFF777BE4FFC2C2D7FFD5D5D5FFD6D6D6CFD9D9D942
+        }
       end
     end
     object mniHelp: TMenuItem
@@ -1047,5 +1123,88 @@ object frmMain: TfrmMain
     Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
     left = 56
     top = 40
+  end
+  object ActionList1: TActionList
+    Images = ilSmallIcons
+    left = 131
+    top = 211
+    object actAddTodo: TAction
+      Category = 'Edit'
+      Caption = 'Add new todo'
+      ImageIndex = 3
+      OnExecute = actAddTodoExecute
+    end
+    object actArchive: TAction
+      Category = 'Edit'
+      Caption = 'Archive complete ToDos'
+      OnExecute = actArchiveExecute
+      OnUpdate = actArchiveUpdate
+    end
+    object actDeadLine: TAction
+      Category = 'Sort'
+      Caption = 'Deadline'
+      OnExecute = actSortXyzExecute
+    end
+    object actPriority: TAction
+      Tag = 1
+      Category = 'Sort'
+      Caption = 'Priority'
+      OnExecute = actSortXyzExecute
+    end
+    object actText: TAction
+      Tag = 2
+      Category = 'Sort'
+      Caption = 'Text'
+      OnExecute = actSortXyzExecute
+    end
+    object actUndo: TAction
+      Category = 'Edit'
+      Caption = 'Undo last deleted ToDo'
+    end
+    object actCut: TAction
+      Category = 'Edit'
+      Caption = 'Cut'
+      ImageIndex = 1
+      OnExecute = actCutExecute
+      OnUpdate = actCutUpdate
+      ShortCut = 16472
+    end
+    object actCopy: TAction
+      Category = 'Edit'
+      Caption = 'Copy'
+      ImageIndex = 0
+      OnExecute = actCopyExecute
+      OnUpdate = actCopyUpdate
+      ShortCut = 16451
+    end
+    object actPaste: TAction
+      Category = 'Edit'
+      Caption = 'Paste'
+      ImageIndex = 2
+      OnExecute = actPasteExecute
+      OnUpdate = actPasteUpdate
+      ShortCut = 16470
+    end
+    object actDelete: TAction
+      Category = 'Edit'
+      Caption = 'Delete'
+      ImageIndex = 4
+      OnExecute = actDeleteExecute
+      OnUpdate = actDeleteUpdate
+      ShortCut = 46
+    end
+    object actProperties: TAction
+      Category = 'Edit'
+      Caption = 'Properties'
+      ImageIndex = 6
+      OnExecute = actPropertiesExecute
+      OnUpdate = actPropertiesUpdate
+      ShortCut = 13
+    end
+    object actSort: TAction
+      Category = 'Sort'
+      Caption = 'Sort'
+      OnUpdate = actSortUpdate
+    end
   end
 end
