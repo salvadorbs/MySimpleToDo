@@ -27,7 +27,7 @@ uses
   StdCtrls, EditBtn, ExtCtrls, Buttons, VirtualTrees, TodoTXTManager,
   {$IFDEF WINDOWS}ActiveX{$ELSE}FakeActiveX{$ENDIF}, filechannel, sharedloggerlcl,
   UniqueInstance, SearchEdit, Clipbrd, ColorUtils, TrayMenu, LCLType, ActnList,
-  StdActns, Settings;
+  StdActns, Settings, extypes;
 
 type
 
@@ -118,6 +118,8 @@ type
     procedure actPropertiesUpdate(Sender: TObject);
     procedure actSortUpdate(Sender: TObject);
     procedure actSortXyzExecute(Sender: TObject);
+    procedure actUndoExecute(Sender: TObject);
+    procedure actUndoUpdate(Sender: TObject);
     procedure edtSearchChange(Sender: TObject);
     procedure edtSearchKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
       );
@@ -169,8 +171,10 @@ type
     FTrayMenu: TTrayMenu;
     FShutDownTime: Boolean;
     FSortType: TSortType;
+    FUndoList: TStringStack;
     procedure CopyToClipboard;
     procedure DeleteCheckedNodes(ATree: TBaseVirtualTree);
+    procedure DeleteSelectedNodes(ATree: TBaseVirtualTree);
     function GetCheckedNodes(ATree: TBaseVirtualTree): TNodeArray;
     procedure PasteFromClipboard;
     function ShowProperty(ATree: TBaseVirtualTree; ANode: PVirtualNode): Boolean;
@@ -204,6 +208,7 @@ uses
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
+  FUndoList := TStringStack.Create;
   FSortType := stText;
   FShutDownTime := False;
   FTrayMenu := TTrayMenu.Create(vstList, ilSmallIcons);
@@ -281,15 +286,8 @@ begin
 end;
 
 procedure TfrmMain.actDeleteExecute(Sender: TObject);
-var
-  I: Integer;
 begin
-  I := vstList.SelectedCount;
-  if I > 0 then
-  begin
-    Log(Format('Removed %d selected ToDo Items', [I]), llInfo);
-    vstList.DeleteSelectedNodes;
-  end;
+  DeleteSelectedNodes(vstList);
 end;
 
 procedure TfrmMain.actDeleteUpdate(Sender: TObject);
@@ -329,6 +327,25 @@ begin
   vstList.SortTree(0, sdAscending);
 end;
 
+procedure TfrmMain.actUndoExecute(Sender: TObject);
+var
+  StringList: TStringList;
+begin
+  StringList := TStringList.Create;
+  try
+    StringList.Text := FUndoList.Pop;
+    FToDoManager.StringsToNode(StringList);
+    Log('Undo last deleted nodes', llInfo);
+  finally
+    StringList.Free;
+  end;
+end;
+
+procedure TfrmMain.actUndoUpdate(Sender: TObject);
+begin
+  TAction(Sender).Enabled := FUndoList.Count > 0;
+end;
+
 procedure TfrmMain.edtSearchKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -354,6 +371,7 @@ end;
 
 procedure TfrmMain.FormDestroy(Sender: TObject);
 begin
+  FUndoList.Free;
   FToDoManager.Free;
   FSettings.Free;
   FTrayMenu.Free;
@@ -673,23 +691,14 @@ var
   Nodes: TNodeArray;
 begin
   sTemp := '';
-  if vstList.SelectedCount > 0 then
+  //Convert selected nodes in string
+  Nodes := vstList.GetSortedSelection(False);
+  sTemp := FToDoManager.NodesToString(Nodes);
+  //Set sTemp in clipboard
+  if sTemp <> '' then
   begin
-    //Convert selected nodes in string
-    Nodes := vstList.GetSortedSelection(False);
-    for I := 0 to High(Nodes) do
-    begin
-      if sTemp = '' then
-        sTemp := FToDoManager.NodeToString(Nodes[I])
-      else
-        sTemp := sTemp + LineEnding + FToDoManager.NodeToString(Nodes[I])
-    end;
-    //Set sTemp in clipboard
-    if sTemp <> '' then
-    begin
-      Clipboard.AsText := sTemp;
-      Log(Format('Copied ToDo item %s in clipboard',[QuotedStr(sTemp)]), llInfo);
-    end;
+    Clipboard.AsText := sTemp;
+    Log(Format('Copied ToDo item %s in clipboard',[QuotedStr(sTemp)]), llInfo);
   end;
 end;
 
@@ -699,9 +708,26 @@ var
   I     : Integer;
 begin
   Nodes := GetCheckedNodes(ATree);
-  //Delete all checked nodes
-  for I := High(Nodes) downto 0 do
-    ATree.DeleteNode(Nodes[I]);
+  if Length(Nodes) > 0 then
+  begin
+    FUndoList.Push(FToDoManager.NodesToString(Nodes));
+    //Delete all checked nodes
+    for I := High(Nodes) downto 0 do
+      ATree.DeleteNode(Nodes[I]);
+  end;
+end;
+
+procedure TfrmMain.DeleteSelectedNodes(ATree: TBaseVirtualTree);
+var
+  Nodes: TNodeArray;
+begin
+  Nodes := ATree.GetSortedSelection(False);
+  if Length(Nodes) > 0 then
+  begin
+    FUndoList.Push(FToDoManager.NodesToString(Nodes));
+    ATree.DeleteSelectedNodes;
+    Log(Format('Deleted %d selected ToDo Items', [Length(Nodes)]), llInfo);
+  end;
 end;
 
 function TfrmMain.GetCheckedNodes(ATree: TBaseVirtualTree): TNodeArray;
@@ -837,8 +863,7 @@ begin
   StringList := TStringList.Create;
   try
     StringList.Text := Clipboard.AsText;
-    for I := 0 to StringList.Count - 1 do
-      FToDoManager.StringToNode(StringList[I]);
+    FToDoManager.StringsToNode(StringList);
     Log(Format('Paste text %s and create a new todo item', [QuotedStr(Clipboard.AsText)]), llInfo);
   finally
     StringList.Free;

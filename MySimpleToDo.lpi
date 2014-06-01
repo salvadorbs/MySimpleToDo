@@ -18,7 +18,7 @@
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
       <MinorVersionNr Value="2"/>
-      <BuildNr Value="64"/>
+      <BuildNr Value="76"/>
       <StringTable Comments="A simple ToDo Manager for you" CompanyName="Matteo Salvi" FileDescription="MySimpleToDo" InternalName="MySimpleToDo" LegalCopyright="(c) 2014 Matteo Salvi" ProductName="MySimpleToDo" ProductVersion="" HomePage="http://www.salvadorsoftware.com/"/>
     </VersionInfo>
     <BuildModes Count="1">
@@ -49,7 +49,7 @@
         <PackageName Value="LCL"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="10">
+    <Units Count="11">
       <Unit0>
         <Filename Value="MySimpleToDo.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -109,6 +109,11 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="about"/>
       </Unit9>
+      <Unit10>
+        <Filename Value="library\extypes.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="extypes"/>
+      </Unit10>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

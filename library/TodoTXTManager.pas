@@ -63,8 +63,13 @@ type
     procedure SaveAs(const AFileName: string);
     procedure ArchiveToDos(const AFileName: string);
 
+    //Single conversion
     function NodeToString(const ANode: PVirtualNode): string;
     function StringToNode(const ALine: string): PVirtualNode;
+
+    //Multi conversion
+    function NodesToString(const ANodes: TNodeArray): string;
+    function StringsToNode(const AStringList: TStringList): TNodeArray;
   end;
 
 const
@@ -444,7 +449,10 @@ var
 begin
   Assign(MyFile, AFileName);
   try
-    Append(MyFile);
+    if FileExists(AFileName) then
+      Append(MyFile)
+    else
+      Rewrite(MyFile);
     Node := FTree.GetFirst;
     while Assigned(Node) do
     begin
@@ -457,6 +465,33 @@ begin
   finally
     Log('Export completed ToDos in ' + AFileName, llInfo);
     CloseFile(MyFile);
+  end;
+end;
+
+function TToDoTXTManager.NodesToString(const ANodes: TNodeArray): string;
+var
+  I: Integer;
+begin
+  Result := '';
+  for I := 0 to Length(ANodes) - 1 do
+  begin
+    if Result = '' then
+      Result := NodeToString(ANodes[I])
+    else
+      Result := Result + LineEnding + NodeToString(ANodes[I]);
+  end;
+end;
+
+function TToDoTXTManager.StringsToNode(const AStringList: TStringList
+  ): TNodeArray;
+var
+  I: Integer;
+begin
+  if AStringList.Count > 0 then
+  begin
+    SetLength(Result, AStringList.Count);
+    for I := 0 to AStringList.Count - 1 do
+      Result[I] := StringToNode(AStringList[I]);
   end;
 end;
 

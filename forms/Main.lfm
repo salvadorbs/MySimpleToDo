@@ -1160,6 +1160,8 @@ object frmMain: TfrmMain
     object actUndo: TAction
       Category = 'Edit'
       Caption = 'Undo last deleted ToDo'
+      OnExecute = actUndoExecute
+      OnUpdate = actUndoUpdate
     end
     object actCut: TAction
       Category = 'Edit'
